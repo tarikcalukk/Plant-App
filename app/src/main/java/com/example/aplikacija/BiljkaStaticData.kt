@@ -9,7 +9,7 @@ val biljke = listOf(
         profilOkusa = ProfilOkusaBiljke.BEZUKUSNO,
         jela = listOf("Salata od paradajza", "Punjene tikvice"),
         klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUBTROPSKA),
-        zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljište.ILOVICA)
+        zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.ILOVACA)
     ),
     Biljka(
         naziv = "Nana (Mentha spicata)",
@@ -19,7 +19,7 @@ val biljke = listOf(
         profilOkusa = ProfilOkusaBiljke.MENTA,
         jela = listOf("Jogurt sa voćem", "Gulaš"),
         klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.UMJERENA),
-        zemljisniTipovi = listOf(Zemljiste.GLINENO, Zemljište.CRNICA)
+        zemljisniTipovi = listOf(Zemljiste.GLINENO, Zemljiste.CRNICA)
     ),
     Biljka(
         naziv = "Kamilica (Matricaria chamomilla)",
@@ -29,7 +29,7 @@ val biljke = listOf(
         profilOkusa = ProfilOkusaBiljke.AROMATICNO,
         jela = listOf("Čaj od kamilice"),
         klimatskiTipovi = listOf(KlimatskiTip.UMJERENA, KlimatskiTip.SUBTROPSKA),
-        zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljište.KRECNJACKO)
+        zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.KRECNJACKO)
     ),
     Biljka(
         naziv = "Ružmarin (Rosmarinus officinalis)",
@@ -39,16 +39,16 @@ val biljke = listOf(
         profilOkusa = ProfilOkusaBiljke.AROMATICNO,
         jela = listOf("Pečeno pile", "Grah","Gulaš"),
         klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUHA),
-        zemljisniTipovi = listOf(Zemljiste.SLJUNKOVITO, Zemljište.KRECNJACKO)
+        zemljisniTipovi = listOf(Zemljiste.SLJUNKOVITO, Zemljiste.KRECNJACKO)
     ),
     Biljka(
         naziv = "Lavanda (Lavandula angustifolia)",
         porodica = "Lamiaceae (metvice)",
         medicinskoUpozorenje = "Nije preporučljivo za trudnice, dojilje i djecu mlađu od 3 godine. Također, treba izbjegavati kontakt lavanda ulja sa očima.",
-        medicinskeKoristi = listOf(MedicinskaKorist.SMIRENJE, MedicinskaKorist.IMMUNOSUPORT),
+        medicinskeKoristi = listOf(MedicinskaKorist.SMIRENJE, MedicinskaKorist.PODRSKAIMUNITETU),
         profilOkusa = ProfilOkusaBiljke.AROMATICNO,
         jela = listOf("Jogurt sa voćem"),
         klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUHA),
-        zemljisniTipovi = listOf(Zemljište.PJESKOVITO, Zemljište.KRECNJACKO)
+        zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.KRECNJACKO)
     )
 )
