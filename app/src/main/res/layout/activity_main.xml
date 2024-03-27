@@ -18,8 +18,9 @@
         android:background="@color/light_green"
         android:fontFamily="sans-serif-smallcaps"
         app:layout_constraintBottom_toTopOf="@id/biljkeRV"
+        app:layout_constraintHorizontal_weight="3.3"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/resetBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -34,4 +35,19 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/modSpinner" />
 
+    <Button
+        android:id="@+id/resetBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="monospace"
+        android:text="Reset"
+        app:layout_constraintBottom_toTopOf="@id/biljkeRV"
+        app:layout_constraintHorizontal_weight="1.4"
+        app:layout_constraintLeft_toRightOf="@id/modSpinner"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText,VisualLintButtonSize" />
 </androidx.constraintlayout.widget.ConstraintLayout>
