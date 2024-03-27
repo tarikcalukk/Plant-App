@@ -16,6 +16,5 @@ class MainActivity : AppCompatActivity() {
         val myAdapterInstance: ArrayAdapter<String> =
             ArrayAdapter<String>(this, layoutID, options)
         spinner.setAdapter(myAdapterInstance)
-
     }
 }
