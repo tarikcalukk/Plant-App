@@ -47,7 +47,7 @@
         android:background="@color/yellow"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Tekst upozorenja R.id.upozorenjeItem"
-        app:layout_constraintBottom_toTopOf="@id/jelo2Item"
+        app:layout_constraintBottom_toTopOf="@id/korist2Item"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/slika"
@@ -55,7 +55,7 @@
         tools:ignore="HardcodedText" />
 
     <TextView
-        android:id="@+id/jelo1Item"
+        android:id="@+id/korist1Item"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -64,13 +64,13 @@
         android:text="korist 1"
         android:textColor="#263238"
         app:layout_constraintBottom_toBottomOf="@id/slika"
-        app:layout_constraintEnd_toStartOf="@id/jelo2Item"
+        app:layout_constraintEnd_toStartOf="@id/korist2Item"
         app:layout_constraintStart_toEndOf="@id/slika"
         app:layout_constraintTop_toBottomOf="@id/porodicaItem"
         tools:ignore="HardcodedText" />
 
     <TextView
-        android:id="@+id/jelo2Item"
+        android:id="@+id/korist2Item"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -79,13 +79,13 @@
         android:text="korist 2"
         android:textColor="#263238"
         app:layout_constraintBottom_toBottomOf="@id/slika"
-        app:layout_constraintEnd_toStartOf="@id/jelo3Item"
-        app:layout_constraintStart_toEndOf="@id/jelo1Item"
+        app:layout_constraintEnd_toStartOf="@id/korist3Item"
+        app:layout_constraintStart_toEndOf="@id/korist1Item"
         app:layout_constraintTop_toBottomOf="@id/porodicaItem"
         tools:ignore="HardcodedText" />
 
     <TextView
-        android:id="@+id/jelo3Item"
+        android:id="@+id/korist3Item"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -95,7 +95,7 @@
         android:textColor="#263238"
         app:layout_constraintBottom_toBottomOf="@id/slika"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/jelo2Item"
+        app:layout_constraintStart_toEndOf="@id/korist2Item"
         app:layout_constraintTop_toBottomOf="@id/porodicaItem"
         tools:ignore="HardcodedText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
