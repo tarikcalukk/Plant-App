@@ -27,7 +27,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="Naziv biljke R.id.nazivItem"
-        app:layout_constraintBottom_toTopOf="@+id/profilOkusaItem"
+        app:layout_constraintBottom_toTopOf="@+id/porodicaItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/slika"
@@ -35,7 +35,7 @@
         tools:ignore="HardcodedText" />
 
     <TextView
-        android:id="@+id/profilOkusaItem"
+        android:id="@+id/porodicaItem"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="@id/slika"
         app:layout_constraintEnd_toStartOf="@id/jelo2Item"
         app:layout_constraintStart_toEndOf="@id/slika"
-        app:layout_constraintTop_toBottomOf="@id/profilOkusaItem"
+        app:layout_constraintTop_toBottomOf="@id/porodicaItem"
         tools:ignore="HardcodedText" />
 
     <TextView
@@ -71,7 +71,7 @@
         app:layout_constraintBottom_toBottomOf="@id/slika"
         app:layout_constraintEnd_toStartOf="@id/jelo3Item"
         app:layout_constraintStart_toEndOf="@id/jelo1Item"
-        app:layout_constraintTop_toBottomOf="@id/profilOkusaItem"
+        app:layout_constraintTop_toBottomOf="@id/porodicaItem"
         tools:ignore="HardcodedText" />
 
     <TextView
@@ -83,6 +83,6 @@
         app:layout_constraintBottom_toBottomOf="@id/slika"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/jelo2Item"
-        app:layout_constraintTop_toBottomOf="@id/profilOkusaItem"
+        app:layout_constraintTop_toBottomOf="@id/porodicaItem"
         tools:ignore="HardcodedText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
