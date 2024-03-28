@@ -23,13 +23,28 @@ class MedicinskiAdapter(
     override fun onBindViewHolder(holder: BiljkeViewHolder, position: Int) {
         val biljka = biljke[position]
 
-        // Bind data to views
+        holder.itemView.setOnClickListener {
+            val referenceBiljka = biljke[position]
+
+            // Filter biljke based on similar medicinal usage
+            val filteredBiljke = biljke.filter { otherBiljka ->
+                otherBiljka.medicinskeKoristi.any { korist ->
+                    referenceBiljka.medicinskeKoristi.contains(korist)
+                }
+            }
+
+            biljke = filteredBiljke
+            notifyDataSetChanged()
+        }
+
         holder.nazivItem.text = biljka.naziv
         holder.upozorenjeItem.text = biljka.medicinskoUpozorenje
-        holder.korist1Item.text = biljka.medicinskeKoristi
-        holder.korist2Item.text = biljka.korist2
-        holder.korist3Item.text = biljka.korist3
-        holder.slika.setImageResource(biljka.eucaliptus)
+        val resourceId = holder.itemView.context.resources.getIdentifier(
+            "eucaliptus", "drawable", holder.itemView.context.packageName
+        )
+        holder.slika.setImageResource(resourceId)
+
+
 
     }
 
@@ -45,5 +60,8 @@ class MedicinskiAdapter(
         val korist1Item: TextView = itemView.findViewById(R.id.korist1Item)
         val korist2Item: TextView = itemView.findViewById(R.id.korist2Item)
         val korist3Item: TextView = itemView.findViewById(R.id.korist3Item)
+    }
+    fun getSelectedBiljka(position: Int): Biljka {
+        return biljke[position]
     }
 }
