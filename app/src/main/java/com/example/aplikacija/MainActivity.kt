@@ -8,6 +8,7 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aplikacija.adapteri.KuharskiAdapter
 import com.example.aplikacija.adapteri.MedicinskiAdapter
 import com.example.aplikacija.pomocneKlase.biljke
 
@@ -16,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var spinner: Spinner
     private lateinit var medicinski: RecyclerView
     private lateinit var medicinskiAdapter: MedicinskiAdapter
+    private lateinit var kuharski: RecyclerView
+    private lateinit var kuharskiAdapter: KuharskiAdapter
     private var listaBiljaka = biljke
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +59,15 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun showKuharskiMod() {
+        kuharski = findViewById(R.id.biljkeRV)
+        kuharski.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        kuharskiAdapter = KuharskiAdapter(listOf())
+        kuharski.adapter = kuharskiAdapter
+        kuharskiAdapter.updateBiljke(listaBiljaka)
     }
 
     private fun showBotanickiMod() {

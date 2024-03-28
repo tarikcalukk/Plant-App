@@ -9,19 +9,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.aplikacija.Biljka
 import com.example.aplikacija.R
 
-class MedicinskiAdapter(
+class KuharskiAdapter (
     private var biljke: List<Biljka>
-) : RecyclerView.Adapter<MedicinskiAdapter.medicinskiHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): medicinskiHolder {
+    ) : RecyclerView.Adapter<KuharskiAdapter.kuharskiHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KuharskiAdapter.kuharskiHolder {
         val view = LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.medicinski, parent, false)
-        return medicinskiHolder(view)
+            .inflate(R.layout.kuharski, parent, false)
+        return kuharskiHolder(view)
     }
 
     override fun getItemCount(): Int = biljke.size
 
-    override fun onBindViewHolder(holder: medicinskiHolder, position: Int) {
+    override fun onBindViewHolder(holder: KuharskiAdapter.kuharskiHolder, position: Int) {
         val biljka = biljke[position]
         holder.itemView.setOnClickListener {
             val referenceBiljka = biljke[position]
@@ -36,15 +37,15 @@ class MedicinskiAdapter(
         }
         holder.nazivItem.text = biljka.naziv
         holder.upozorenjeItem.text = biljka.medicinskoUpozorenje
-        holder.korist1Item.text = ""
-        holder.korist2Item.text = ""
-        holder.korist3Item.text = ""
+        holder.jelo1Item.text = ""
+        holder.jelo2Item.text = ""
+        holder.jelo3Item.text = ""
         for (i in biljka.medicinskeKoristi.indices) {
             val korist = biljka.medicinskeKoristi[i]
             when (i) {
-                0 -> holder.korist1Item.text = korist.toString()
-                1 -> holder.korist2Item.text = korist.toString()
-                2 -> holder.korist3Item.text = korist.toString()
+                0 -> holder.jelo1Item.text = korist.toString()
+                1 -> holder.jelo2Item.text = korist.toString()
+                2 -> holder.jelo3Item.text = korist.toString()
             }
         }
         val resourceId = holder.itemView.context.resources.getIdentifier(
@@ -58,12 +59,12 @@ class MedicinskiAdapter(
         notifyDataSetChanged()
     }
 
-    inner class medicinskiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class kuharskiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val slika: ImageView = itemView.findViewById(R.id.slika)
         val nazivItem: TextView = itemView.findViewById(R.id.nazivItem)
-        val upozorenjeItem: TextView = itemView.findViewById(R.id.upozorenjeItem)
-        val korist1Item: TextView = itemView.findViewById(R.id.korist1Item)
-        val korist2Item: TextView = itemView.findViewById(R.id.korist2Item)
-        val korist3Item: TextView = itemView.findViewById(R.id.korist3Item)
+        val upozorenjeItem: TextView = itemView.findViewById(R.id.profilOkusaItem)
+        val jelo1Item: TextView = itemView.findViewById(R.id.jelo1Item)
+        val jelo2Item: TextView = itemView.findViewById(R.id.jelo2Item)
+        val jelo3Item: TextView = itemView.findViewById(R.id.jelo3Item)
     }
 }
