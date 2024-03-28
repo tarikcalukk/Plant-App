@@ -10,8 +10,13 @@ import com.example.aplikacija.Biljka
 import com.example.aplikacija.R
 
 class MedicinskiAdapter(
-    private var biljke: List<Biljka>
+    private var biljke: List<Biljka>,
+    private var referentnaBiljka: Biljka? = null
 ) : RecyclerView.Adapter<MedicinskiAdapter.medicinskiHolder>() {
+    fun updateReferentnaBiljka(referentnaBiljka: Biljka?) {
+        this.referentnaBiljka = referentnaBiljka
+        notifyDataSetChanged()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): medicinskiHolder {
         val view = LayoutInflater
             .from(parent.context)
@@ -65,5 +70,17 @@ class MedicinskiAdapter(
         val korist1Item: TextView = itemView.findViewById(R.id.korist1Item)
         val korist2Item: TextView = itemView.findViewById(R.id.korist2Item)
         val korist3Item: TextView = itemView.findViewById(R.id.korist3Item)
+    }
+
+    private fun filterBiljke(): List<Biljka> {
+        return if (referentnaBiljka != null) {
+            biljke.filter { biljka ->
+                biljka.medicinskeKoristi.any { korist ->
+                    referentnaBiljka?.medicinskeKoristi?.contains(korist) ?: false
+                }
+            }
+        } else {
+            biljke
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var kuharski: RecyclerView
     private lateinit var kuharskiAdapter: KuharskiAdapter
     private var listaBiljaka = biljke
+    private var trenutniMod: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +41,17 @@ class MainActivity : AppCompatActivity() {
                     1 -> showKuharskiMod()
                     2 -> showBotanickiMod()
                 }
+                trenutniMod = position
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+        val resetBtn = findViewById<Button>(R.id.resetBtn)
+        resetBtn.setOnClickListener {
+            when (trenutniMod) {
+                0 -> showMedicinskiMod()
+                1 -> showKuharskiMod()
+                2 -> showBotanickiMod()
             }
         }
     }
@@ -53,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         )
         medicinskiAdapter = MedicinskiAdapter(listOf())
         medicinski.adapter = medicinskiAdapter
+        medicinskiAdapter.updateBiljke(listaBiljaka)
+        medicinskiAdapter.updateReferentnaBiljka(null)
         medicinskiAdapter.updateBiljke(listaBiljaka)
     }
 
