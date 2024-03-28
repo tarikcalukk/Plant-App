@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var medicinski: RecyclerView
-    private lateinit var biljkeAdapter: BiljkeListAdapter
+    private lateinit var biljkeAdapter: MedicinskiAdapter
     private var listaBiljaka = biljke
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,10 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerView: RecyclerView = findViewById(R.id.biljkeRV)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        biljkeAdapter = BiljkeListAdapter(emptyList()) { clickedBiljka ->
-            Toast.makeText(this, "Kliknuta biljka: ${clickedBiljka.naziv}", Toast.LENGTH_SHORT)
-                .show()
-        }
+
 
         recyclerView.adapter = biljkeAdapter
         val spinner = findViewById<Spinner>(R.id.modSpinner)
