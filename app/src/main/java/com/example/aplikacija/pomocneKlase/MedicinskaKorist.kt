@@ -1,4 +1,4 @@
-package com.example.aplikacija
+package com.example.aplikacija.pomocneKlase
 
 enum class MedicinskaKorist(val opis: String) {
     SMIRENJE("Smirenje - za smirenje i relaksaciju"),

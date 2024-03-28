@@ -8,6 +8,8 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aplikacija.adapteri.MedicinskiAdapter
+import com.example.aplikacija.pomocneKlase.biljke
 
 
 class MainActivity : AppCompatActivity() {
@@ -19,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         spinner = findViewById(R.id.modSpinner)
         val options = arrayListOf("Medicinski", "Kuharski", "Botanički")
         val layoutID = android.R.layout.simple_spinner_item
@@ -34,11 +37,8 @@ class MainActivity : AppCompatActivity() {
                     2 -> showBotanickiMod()
                 }
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
-
-
         }
     }
     private fun showMedicinskiMod() {
@@ -56,7 +56,6 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun showKuharskiMod() {
-
     }
 
     private fun showBotanickiMod() {

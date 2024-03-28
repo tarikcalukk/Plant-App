@@ -1,12 +1,13 @@
-package com.example.aplikacija
+package com.example.aplikacija.adapteri
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aplikacija.Biljka
+import com.example.aplikacija.R
 
 class MedicinskiAdapter(
     private var biljke: List<Biljka>
@@ -22,7 +23,6 @@ class MedicinskiAdapter(
 
     override fun onBindViewHolder(holder: BiljkeViewHolder, position: Int) {
         val biljka = biljke[position]
-
         holder.itemView.setOnClickListener {
             val referenceBiljka = biljke[position]
 
@@ -32,20 +32,25 @@ class MedicinskiAdapter(
                     referenceBiljka.medicinskeKoristi.contains(korist)
                 }
             }
-
             biljke = filteredBiljke
             notifyDataSetChanged()
         }
-
         holder.nazivItem.text = biljka.naziv
         holder.upozorenjeItem.text = biljka.medicinskoUpozorenje
+        for (i in 0 until minOf(3, biljka.medicinskeKoristi.size)) {
+            val korist = biljka.medicinskeKoristi[i]
+            when (i) {
+                0 -> holder.korist1Item.text = korist.toString()
+                1 -> holder.korist2Item.text = korist.toString()
+                2 -> holder.korist3Item.text = korist.toString()
+            }
+        }
+
+
         val resourceId = holder.itemView.context.resources.getIdentifier(
             "eucaliptus", "drawable", holder.itemView.context.packageName
         )
         holder.slika.setImageResource(resourceId)
-
-
-
     }
 
     fun updateBiljke(biljke: List<Biljka>) {
@@ -60,8 +65,5 @@ class MedicinskiAdapter(
         val korist1Item: TextView = itemView.findViewById(R.id.korist1Item)
         val korist2Item: TextView = itemView.findViewById(R.id.korist2Item)
         val korist3Item: TextView = itemView.findViewById(R.id.korist3Item)
-    }
-    fun getSelectedBiljka(position: Int): Biljka {
-        return biljke[position]
     }
 }

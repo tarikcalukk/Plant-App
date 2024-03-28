@@ -1,4 +1,6 @@
-package com.example.aplikacija
+package com.example.aplikacija.pomocneKlase
+
+import com.example.aplikacija.Biljka
 
 val biljke = listOf(
     Biljka(

@@ -1,4 +1,4 @@
-package com.example.aplikacija
+package com.example.aplikacija.pomocneKlase
 
 enum class Zemljiste(val naziv: String) {
     PJESKOVITO("Pjeskovito zemljište"),

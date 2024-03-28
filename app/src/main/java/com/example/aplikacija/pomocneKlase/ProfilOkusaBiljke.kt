@@ -1,4 +1,4 @@
-package com.example.aplikacija
+package com.example.aplikacija.pomocneKlase
 
 enum class ProfilOkusaBiljke(val opis: String) {
     MENTA("Mentol - osvježavajući, hladan ukus"),
