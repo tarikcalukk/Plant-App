@@ -11,15 +11,15 @@ import com.example.aplikacija.R
 
 class KuharskiAdapter (
     private var biljke: List<Biljka>,
-    private var referenceBiljka: Biljka? = null
+    private var referentnaBiljka: Biljka? = null
     ) : RecyclerView.Adapter<KuharskiAdapter.KuharskiHolder>() {
     fun updateReferenceBiljka(biljka: Biljka?) {
-        referenceBiljka = biljka
+        referentnaBiljka = biljka
         filterBiljke()
     }
 
     private fun filterBiljke() {
-        referenceBiljka?.let { reference ->
+        referentnaBiljka?.let { reference ->
             biljke = biljke.filter { biljka ->
                 biljka.jela.any { korist ->
                     reference.jela.contains(korist)
@@ -41,7 +41,7 @@ class KuharskiAdapter (
     override fun onBindViewHolder(holder: KuharskiAdapter.KuharskiHolder, position: Int) {
         val biljka = biljke[position]
         holder.itemView.setOnClickListener {
-            referenceBiljka = biljka
+            referentnaBiljka = biljka
             filterBiljke()
         }
         holder.nazivItem.text = biljka.naziv

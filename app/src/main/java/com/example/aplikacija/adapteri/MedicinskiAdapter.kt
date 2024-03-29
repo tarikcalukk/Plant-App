@@ -12,7 +12,7 @@ import com.example.aplikacija.R
 class MedicinskiAdapter(
     private var biljke: List<Biljka>,
     private var referentnaBiljka: Biljka? = null
-) : RecyclerView.Adapter<MedicinskiAdapter.medicinskiHolder>() {
+    ) : RecyclerView.Adapter<MedicinskiAdapter.medicinskiHolder>() {
     fun updateReferentnaBiljka(referentnaBiljka: Biljka?) {
         this.referentnaBiljka = referentnaBiljka
         notifyDataSetChanged()

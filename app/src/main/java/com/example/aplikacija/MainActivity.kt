@@ -9,6 +9,7 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aplikacija.adapteri.BotanickiAdapter
 import com.example.aplikacija.adapteri.KuharskiAdapter
 import com.example.aplikacija.adapteri.MedicinskiAdapter
 import com.example.aplikacija.pomocneKlase.biljke
@@ -17,9 +18,11 @@ import com.example.aplikacija.pomocneKlase.biljke
 class MainActivity : AppCompatActivity() {
     private lateinit var spinner: Spinner
     private lateinit var medicinski: RecyclerView
-    private lateinit var medicinskiAdapter: MedicinskiAdapter
     private lateinit var kuharski: RecyclerView
+    private lateinit var botanicki: RecyclerView
+    private lateinit var medicinskiAdapter: MedicinskiAdapter
     private lateinit var kuharskiAdapter: KuharskiAdapter
+    private lateinit var botanickiAdapter: BotanickiAdapter
     private var listaBiljaka = biljke
     private var trenutniMod: Int = 0
 
@@ -54,6 +57,7 @@ class MainActivity : AppCompatActivity() {
                 2 -> showBotanickiMod()
             }
         }
+        showMedicinskiMod()
     }
     private fun showMedicinskiMod() {
         medicinski = findViewById(R.id.biljkeRV)
@@ -85,5 +89,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showBotanickiMod() {
+        botanicki = findViewById(R.id.biljkeRV)
+        botanicki.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        botanickiAdapter = BotanickiAdapter(listOf())
+        botanicki.adapter = botanickiAdapter
+        botanickiAdapter.updateBiljke(listaBiljaka)
+        botanickiAdapter.updateReferentnaBiljka(null)
+        botanickiAdapter.updateBiljke(listaBiljaka)
     }
+
 }
