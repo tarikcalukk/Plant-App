@@ -70,7 +70,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun showKuharskiMod() {
         kuharski = findViewById(R.id.biljkeRV)
         kuharski.layoutManager = LinearLayoutManager(
@@ -81,6 +80,8 @@ class MainActivity : AppCompatActivity() {
         kuharskiAdapter = KuharskiAdapter(listOf())
         kuharski.adapter = kuharskiAdapter
         kuharskiAdapter.updateBiljke(listaBiljaka)
+        medicinskiAdapter.updateReferentnaBiljka(null)
+        medicinskiAdapter.updateBiljke(listaBiljaka)
     }
 
     private fun showBotanickiMod() {

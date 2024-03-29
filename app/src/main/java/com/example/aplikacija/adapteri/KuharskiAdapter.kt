@@ -10,59 +10,71 @@ import com.example.aplikacija.Biljka
 import com.example.aplikacija.R
 
 class KuharskiAdapter (
-    private var biljke: List<Biljka>
-    ) : RecyclerView.Adapter<KuharskiAdapter.kuharskiHolder>() {
+    private var biljke: List<Biljka>,
+    private var referenceBiljka: Biljka? = null
+    ) : RecyclerView.Adapter<KuharskiAdapter.KuharskiHolder>() {
+    fun updateReferenceBiljka(biljka: Biljka?) {
+        referenceBiljka = biljka
+        filterBiljke()
+    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KuharskiAdapter.kuharskiHolder {
+    private fun filterBiljke() {
+        referenceBiljka?.let { reference ->
+            biljke = biljke.filter { biljka ->
+                biljka.jela.any { korist ->
+                    reference.jela.contains(korist)
+                } || biljka.profilOkusa == reference.profilOkusa
+            }
+        }
+        notifyDataSetChanged()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KuharskiAdapter.KuharskiHolder {
         val view = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.kuharski, parent, false)
-        return kuharskiHolder(view)
+        return KuharskiHolder(view)
     }
 
     override fun getItemCount(): Int = biljke.size
 
-    override fun onBindViewHolder(holder: KuharskiAdapter.kuharskiHolder, position: Int) {
+    override fun onBindViewHolder(holder: KuharskiAdapter.KuharskiHolder, position: Int) {
         val biljka = biljke[position]
         holder.itemView.setOnClickListener {
-            val referenceBiljka = biljke[position]
-
-            val filteredBiljke = biljke.filter { otherBiljka ->
-                otherBiljka.medicinskeKoristi.any { korist ->
-                    referenceBiljka.medicinskeKoristi.contains(korist)
-                }
-            }
-            biljke = filteredBiljke
-            notifyDataSetChanged()
+            referenceBiljka = biljka
+            filterBiljke()
         }
         holder.nazivItem.text = biljka.naziv
-        holder.upozorenjeItem.text = biljka.medicinskoUpozorenje
+        holder.profilOkusaItem.text = biljka.profilOkusa.toString()
         holder.jelo1Item.text = ""
         holder.jelo2Item.text = ""
         holder.jelo3Item.text = ""
-        for (i in biljka.medicinskeKoristi.indices) {
-            val korist = biljka.medicinskeKoristi[i]
+
+        for (i in biljka.jela.indices) {
+            val jelo = biljka.jela[i]
             when (i) {
-                0 -> holder.jelo1Item.text = korist.toString()
-                1 -> holder.jelo2Item.text = korist.toString()
-                2 -> holder.jelo3Item.text = korist.toString()
+                0 -> holder.jelo1Item.text = jelo
+                1 -> holder.jelo2Item.text = jelo
+                2 -> holder.jelo3Item.text = jelo
             }
         }
+
         val resourceId = holder.itemView.context.resources.getIdentifier(
             "eucaliptus", "drawable", holder.itemView.context.packageName
         )
         holder.slika.setImageResource(resourceId)
     }
 
+
     fun updateBiljke(biljke: List<Biljka>) {
         this.biljke = biljke
         notifyDataSetChanged()
     }
 
-    inner class kuharskiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class KuharskiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val slika: ImageView = itemView.findViewById(R.id.slika)
         val nazivItem: TextView = itemView.findViewById(R.id.nazivItem)
-        val upozorenjeItem: TextView = itemView.findViewById(R.id.profilOkusaItem)
+        val profilOkusaItem: TextView = itemView.findViewById(R.id.profilOkusaItem)
         val jelo1Item: TextView = itemView.findViewById(R.id.jelo1Item)
         val jelo2Item: TextView = itemView.findViewById(R.id.jelo2Item)
         val jelo3Item: TextView = itemView.findViewById(R.id.jelo3Item)
