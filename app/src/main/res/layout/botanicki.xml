@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/slika"
+            android:id="@+id/slikaItem"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginLeft="16dp"
@@ -35,8 +35,8 @@
             android:textColor="#263238"
             app:layout_constraintBottom_toTopOf="@+id/porodicaItem"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/slika"
-            app:layout_constraintTop_toTopOf="@+id/slika" />
+            app:layout_constraintStart_toEndOf="@+id/slikaItem"
+            app:layout_constraintTop_toTopOf="@+id/slikaItem" />
 
         <TextView
             android:id="@+id/porodicaItem"
@@ -50,7 +50,7 @@
             android:fontFamily="sans-serif-smallcaps"
             app:layout_constraintBottom_toTopOf="@id/klimatskiTipItem"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/slika"
+            app:layout_constraintStart_toEndOf="@+id/slikaItem"
             app:layout_constraintTop_toBottomOf="@id/nazivItem" />
 
         <TextView
@@ -65,7 +65,7 @@
             android:textColor="#424242"
             app:layout_constraintBottom_toTopOf="@id/zemljisniTipItem"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/slika"
+            app:layout_constraintStart_toEndOf="@+id/slikaItem"
             app:layout_constraintTop_toBottomOf="@+id/porodicaItem" />
 
         <TextView
@@ -78,9 +78,9 @@
             android:background="@color/pink"
             android:fontFamily="sans-serif-smallcaps"
             android:textColor="#3E2723"
-            app:layout_constraintBottom_toBottomOf="@id/slika"
+            app:layout_constraintBottom_toBottomOf="@id/slikaItem"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/slika"
+            app:layout_constraintStart_toEndOf="@+id/slikaItem"
             app:layout_constraintTop_toBottomOf="@+id/klimatskiTipItem" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

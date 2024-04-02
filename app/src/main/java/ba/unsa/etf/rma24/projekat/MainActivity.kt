@@ -1,4 +1,4 @@
-package com.example.aplikacija
+package ba.unsa.etf.rma24.projekat
 
 import android.os.Bundle
 import android.view.View
@@ -9,10 +9,11 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aplikacija.adapteri.BotanickiAdapter
-import com.example.aplikacija.adapteri.KuharskiAdapter
-import com.example.aplikacija.adapteri.MedicinskiAdapter
-import com.example.aplikacija.pomocneKlase.biljke
+import ba.unsa.etf.rma24.projekat.adapteri.BotanickiAdapter
+import ba.unsa.etf.rma24.projekat.adapteri.KuharskiAdapter
+import ba.unsa.etf.rma24.projekat.adapteri.MedicinskiAdapter
+import ba.unsa.etf.rma24.projekat.pomocneKlase.biljke
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -84,8 +85,8 @@ class MainActivity : AppCompatActivity() {
         kuharskiAdapter = KuharskiAdapter(listOf())
         kuharski.adapter = kuharskiAdapter
         kuharskiAdapter.updateBiljke(listaBiljaka)
-        medicinskiAdapter.updateReferentnaBiljka(null)
-        medicinskiAdapter.updateBiljke(listaBiljaka)
+        kuharskiAdapter.updateReferentnaBiljka(null)
+        kuharskiAdapter.updateBiljke(listaBiljaka)
     }
 
     private fun showBotanickiMod() {

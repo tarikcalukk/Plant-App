@@ -1,6 +1,6 @@
-package com.example.aplikacija.pomocneKlase
+package ba.unsa.etf.rma24.projekat.pomocneKlase
 
-import com.example.aplikacija.Biljka
+import ba.unsa.etf.rma24.projekat.Biljka
 
 val biljke = listOf(
     Biljka(
@@ -37,7 +37,10 @@ val biljke = listOf(
         naziv = "Ružmarin (Rosmarinus officinalis)",
         porodica = "Lamiaceae (metvice)",
         medicinskoUpozorenje = "Treba ga koristiti umjereno i konsultovati se sa ljekarom pri dugotrajnoj upotrebi ili upotrebi u većim količinama.",
-        medicinskeKoristi = listOf(MedicinskaKorist.PROTUUPALNO, MedicinskaKorist.REGULACIJAPRITISKA),
+        medicinskeKoristi = listOf(
+            MedicinskaKorist.PROTUUPALNO,
+            MedicinskaKorist.REGULACIJAPRITISKA
+        ),
         profilOkusa = ProfilOkusaBiljke.AROMATICNO,
         jela = listOf("Pečeno pile", "Grah","Gulaš"),
         klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUHA),
@@ -107,7 +110,10 @@ val biljke = listOf(
         naziv = "Glog (Crataegus)",
         porodica = "Rosaceae (ružičaste)",
         medicinskoUpozorenje = "Glog može interagirati s nekim lijekovima, pa je važno konzultirati se s ljekarom prije upotrebe.",
-        medicinskeKoristi = listOf(MedicinskaKorist.REGULACIJAPRITISKA, MedicinskaKorist.REGULACIJAPROBAVE),
+        medicinskeKoristi = listOf(
+            MedicinskaKorist.REGULACIJAPRITISKA,
+            MedicinskaKorist.REGULACIJAPROBAVE
+        ),
         profilOkusa = ProfilOkusaBiljke.GORKO,
         jela = listOf("Glog čaj", "Nema značajnu kulinarsku upotrebu"),
         klimatskiTipovi = listOf(KlimatskiTip.UMJERENA, KlimatskiTip.PLANINSKA),

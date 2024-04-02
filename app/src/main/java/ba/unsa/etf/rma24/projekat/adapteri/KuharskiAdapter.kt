@@ -1,4 +1,4 @@
-package com.example.aplikacija.adapteri
+package ba.unsa.etf.rma24.projekat.adapteri
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,18 +6,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aplikacija.Biljka
-import com.example.aplikacija.R
+import ba.unsa.etf.rma24.projekat.Biljka
+import ba.unsa.etf.rma24.projekat.R
 
 class KuharskiAdapter (
     private var biljke: List<Biljka>,
     private var referentnaBiljka: Biljka? = null
     ) : RecyclerView.Adapter<KuharskiAdapter.KuharskiHolder>() {
-    fun updateReferenceBiljka(biljka: Biljka?) {
+    fun updateReferentnaBiljka(biljka: Biljka?) {
         referentnaBiljka = biljka
         filterBiljke()
     }
-
     private fun filterBiljke() {
         referentnaBiljka?.let { reference ->
             biljke = biljke.filter { biljka ->
@@ -29,7 +28,7 @@ class KuharskiAdapter (
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KuharskiAdapter.KuharskiHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KuharskiHolder {
         val view = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.kuharski, parent, false)
@@ -38,14 +37,14 @@ class KuharskiAdapter (
 
     override fun getItemCount(): Int = biljke.size
 
-    override fun onBindViewHolder(holder: KuharskiAdapter.KuharskiHolder, position: Int) {
+    override fun onBindViewHolder(holder: KuharskiHolder, position: Int) {
         val biljka = biljke[position]
         holder.itemView.setOnClickListener {
             referentnaBiljka = biljka
             filterBiljke()
         }
         holder.nazivItem.text = biljka.naziv
-        holder.profilOkusaItem.text = biljka.profilOkusa.toString()
+        holder.profilOkusaItem.text = biljka.profilOkusa.opis
         holder.jelo1Item.text = ""
         holder.jelo2Item.text = ""
         holder.jelo3Item.text = ""
@@ -72,7 +71,7 @@ class KuharskiAdapter (
     }
 
     inner class KuharskiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val slika: ImageView = itemView.findViewById(R.id.slika)
+        val slika: ImageView = itemView.findViewById(R.id.slikaItem)
         val nazivItem: TextView = itemView.findViewById(R.id.nazivItem)
         val profilOkusaItem: TextView = itemView.findViewById(R.id.profilOkusaItem)
         val jelo1Item: TextView = itemView.findViewById(R.id.jelo1Item)

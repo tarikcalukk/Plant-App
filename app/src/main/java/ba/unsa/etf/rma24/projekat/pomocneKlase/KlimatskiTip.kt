@@ -1,4 +1,4 @@
-package com.example.aplikacija.pomocneKlase
+package ba.unsa.etf.rma24.projekat.pomocneKlase
 
 enum class KlimatskiTip(val opis: String) {
     SREDOZEMNA("Mediteranska klima - suha, topla ljeta i blage zime"),

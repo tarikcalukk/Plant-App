@@ -1,4 +1,4 @@
-package com.example.aplikacija.adapteri
+package ba.unsa.etf.rma24.projekat.adapteri
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aplikacija.Biljka
-import com.example.aplikacija.R
+import ba.unsa.etf.rma24.projekat.Biljka
+import ba.unsa.etf.rma24.projekat.R
 
 class MedicinskiAdapter(
     private var biljke: List<Biljka>,
@@ -15,6 +15,7 @@ class MedicinskiAdapter(
     ) : RecyclerView.Adapter<MedicinskiAdapter.medicinskiHolder>() {
     fun updateReferentnaBiljka(referentnaBiljka: Biljka?) {
         this.referentnaBiljka = referentnaBiljka
+        filterBiljke()
         notifyDataSetChanged()
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): medicinskiHolder {
@@ -41,17 +42,10 @@ class MedicinskiAdapter(
         }
         holder.nazivItem.text = biljka.naziv
         holder.upozorenjeItem.text = biljka.medicinskoUpozorenje
-        holder.korist1Item.text = ""
-        holder.korist2Item.text = ""
-        holder.korist3Item.text = ""
-        for (i in biljka.medicinskeKoristi.indices) {
-            val korist = biljka.medicinskeKoristi[i]
-            when (i) {
-                0 -> holder.korist1Item.text = korist.toString()
-                1 -> holder.korist2Item.text = korist.toString()
-                2 -> holder.korist3Item.text = korist.toString()
-            }
-        }
+        holder.korist1Item.text = biljka.medicinskeKoristi.getOrNull(0)?.opis ?: ""
+        holder.korist2Item.text = biljka.medicinskeKoristi.getOrNull(1)?.opis ?: ""
+        holder.korist3Item.text = biljka.medicinskeKoristi.getOrNull(2)?.opis ?: ""
+
         val resourceId = holder.itemView.context.resources.getIdentifier(
             "eucaliptus", "drawable", holder.itemView.context.packageName
         )
@@ -64,7 +58,7 @@ class MedicinskiAdapter(
     }
 
     inner class medicinskiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val slika: ImageView = itemView.findViewById(R.id.slika)
+        val slika: ImageView = itemView.findViewById(R.id.slikaItem)
         val nazivItem: TextView = itemView.findViewById(R.id.nazivItem)
         val upozorenjeItem: TextView = itemView.findViewById(R.id.upozorenjeItem)
         val korist1Item: TextView = itemView.findViewById(R.id.korist1Item)

@@ -1,4 +1,4 @@
-package com.example.aplikacija.adapteri
+package ba.unsa.etf.rma24.projekat.adapteri
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aplikacija.Biljka
-import com.example.aplikacija.R
+import ba.unsa.etf.rma24.projekat.Biljka
+import ba.unsa.etf.rma24.projekat.R
 
 class BotanickiAdapter (
     private var biljke: List<Biljka>,
@@ -39,7 +39,7 @@ class BotanickiAdapter (
             notifyDataSetChanged()
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BotanickiAdapter.BotanickiHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BotanickiHolder {
             val view = LayoutInflater
                 .from(parent.context)
                 .inflate(R.layout.botanicki, parent, false)
@@ -47,7 +47,7 @@ class BotanickiAdapter (
         }
         override fun getItemCount(): Int = biljke.size
 
-        override fun onBindViewHolder(holder: BotanickiAdapter.BotanickiHolder, position: Int) {
+        override fun onBindViewHolder(holder: BotanickiHolder, position: Int) {
             val biljka = biljke[position]
             holder.itemView.setOnClickListener {
                 referentnaBiljka = biljka
@@ -55,8 +55,8 @@ class BotanickiAdapter (
             }
             holder.nazivItem.text = biljka.naziv
             holder.porodicaItem.text = biljka.porodica
-            holder.klimatskiTipItem.text = biljka.klimatskiTipovi[0].toString()
-            holder.zemljisniTipItem.text = biljka.zemljisniTipovi[0].toString()
+            holder.klimatskiTipItem.text = biljka.klimatskiTipovi[0].opis
+            holder.zemljisniTipItem.text = biljka.zemljisniTipovi[0].naziv
 
             val resourceId = holder.itemView.context.resources.getIdentifier(
                 "eucaliptus", "drawable", holder.itemView.context.packageName
@@ -71,7 +71,7 @@ class BotanickiAdapter (
         }
 
         inner class BotanickiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val slika: ImageView = itemView.findViewById(R.id.slika)
+            val slika: ImageView = itemView.findViewById(R.id.slikaItem)
             val nazivItem: TextView = itemView.findViewById(R.id.nazivItem)
             val porodicaItem: TextView = itemView.findViewById(R.id.porodicaItem)
             val klimatskiTipItem: TextView = itemView.findViewById(R.id.klimatskiTipItem)

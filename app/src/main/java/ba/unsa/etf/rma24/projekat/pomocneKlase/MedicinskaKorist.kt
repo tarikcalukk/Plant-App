@@ -1,4 +1,4 @@
-package com.example.aplikacija.pomocneKlase
+package ba.unsa.etf.rma24.projekat.pomocneKlase
 
 enum class MedicinskaKorist(val opis: String) {
     SMIRENJE("Smirenje - za smirenje i relaksaciju"),
@@ -8,4 +8,3 @@ enum class MedicinskaKorist(val opis: String) {
     REGULACIJAPROBAVE("Regulacija probave"),
     PODRSKAIMUNITETU("Podrška imunitetu"),
 }
-

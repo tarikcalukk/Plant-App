@@ -1,9 +1,9 @@
-package com.example.aplikacija
+package ba.unsa.etf.rma24.projekat
 
-import com.example.aplikacija.pomocneKlase.KlimatskiTip
-import com.example.aplikacija.pomocneKlase.MedicinskaKorist
-import com.example.aplikacija.pomocneKlase.ProfilOkusaBiljke
-import com.example.aplikacija.pomocneKlase.Zemljiste
+import ba.unsa.etf.rma24.projekat.pomocneKlase.KlimatskiTip
+import ba.unsa.etf.rma24.projekat.pomocneKlase.MedicinskaKorist
+import ba.unsa.etf.rma24.projekat.pomocneKlase.ProfilOkusaBiljke
+import ba.unsa.etf.rma24.projekat.pomocneKlase.Zemljiste
 
 data class Biljka(
     val naziv: String,

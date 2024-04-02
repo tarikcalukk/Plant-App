@@ -1,4 +1,4 @@
-package com.example.aplikacija
+package ba.unsa.etf
 
 import org.junit.Test
 

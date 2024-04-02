@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/slika"
+            android:id="@+id/slikaItem"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginLeft="16dp"
@@ -36,8 +36,8 @@
             app:layout_constraintBottom_toTopOf="@id/upozorenjeItem"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/slika"
-            app:layout_constraintTop_toTopOf="@+id/slika" />
+            app:layout_constraintStart_toEndOf="@+id/slikaItem"
+            app:layout_constraintTop_toTopOf="@+id/slikaItem" />
 
         <TextView
             android:id="@+id/upozorenjeItem"
@@ -51,7 +51,7 @@
             app:layout_constraintBottom_toTopOf="@id/korist2Item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/slika"
+            app:layout_constraintStart_toEndOf="@+id/slikaItem"
             app:layout_constraintTop_toBottomOf="@id/nazivItem" />
 
         <TextView
@@ -65,9 +65,9 @@
             android:background="@color/lred"
             android:fontFamily="sans-serif-smallcaps"
             android:textColor="#263238"
-            app:layout_constraintBottom_toBottomOf="@id/slika"
+            app:layout_constraintBottom_toBottomOf="@id/slikaItem"
             app:layout_constraintEnd_toStartOf="@id/korist2Item"
-            app:layout_constraintStart_toEndOf="@id/slika"
+            app:layout_constraintStart_toEndOf="@id/slikaItem"
             app:layout_constraintTop_toBottomOf="@id/upozorenjeItem" />
 
         <TextView
@@ -80,7 +80,7 @@
             android:background="@color/lred"
             android:fontFamily="sans-serif-smallcaps"
             android:textColor="#263238"
-            app:layout_constraintBottom_toBottomOf="@id/slika"
+            app:layout_constraintBottom_toBottomOf="@id/slikaItem"
             app:layout_constraintEnd_toStartOf="@id/korist3Item"
             app:layout_constraintStart_toEndOf="@id/korist1Item"
             app:layout_constraintTop_toBottomOf="@id/upozorenjeItem" />
@@ -95,7 +95,7 @@
             android:background="@color/lred"
             android:fontFamily="sans-serif-smallcaps"
             android:textColor="#263238"
-            app:layout_constraintBottom_toBottomOf="@id/slika"
+            app:layout_constraintBottom_toBottomOf="@id/slikaItem"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/korist2Item"
             app:layout_constraintTop_toBottomOf="@id/upozorenjeItem" />
