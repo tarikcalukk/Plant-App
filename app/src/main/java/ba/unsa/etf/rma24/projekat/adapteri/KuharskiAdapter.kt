@@ -9,48 +9,81 @@ import androidx.recyclerview.widget.RecyclerView
 import ba.unsa.etf.rma24.projekat.Biljka
 import ba.unsa.etf.rma24.projekat.R
 
-class KuharskiAdapter (
-    private var biljke: List<Biljka>,
-    private var referentnaBiljka: Biljka? = null
-    ) : RecyclerView.Adapter<KuharskiAdapter.KuharskiHolder>() {
-    fun updateReferentnaBiljka(biljka: Biljka?) {
-        referentnaBiljka = biljka
-        filterBiljke()
-    }
-    private fun filterBiljke() {
-        referentnaBiljka?.let { reference ->
-            biljke = biljke.filter { biljka ->
-                biljka.jela.any { korist ->
-                    reference.jela.contains(korist)
-                } || biljka.profilOkusa == reference.profilOkusa
-            }
-        }
+class KuharskiAdapter(
+    var biljke: List<Biljka>,
+    private val filterCallback: (Biljka?) -> Unit
+) : RecyclerView.Adapter<KuharskiAdapter.KuharskiHolder>() {
+
+    private var clickedBiljka: Biljka? = null
+
+    fun updateBiljke(updatedList: List<Biljka>) {
+        biljke = updatedList
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KuharskiHolder {
-        val view = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.kuharski, parent, false)
-        return KuharskiHolder(view)
+    fun filter(reference: Biljka?) {
+        val filteredList = mutableListOf<Biljka>()
+        if (reference != null) {
+            for (biljka in biljke) {
+                if (biljka.jela.any { jelo ->
+                        reference.jela.contains(jelo)
+                    } || biljka.profilOkusa == reference.profilOkusa) {
+                    filteredList.add(biljka)
+                }
+            }
+        } else {
+            filteredList.addAll(biljke)
+        }
+        updateBiljke(filteredList)
     }
 
+    inner class KuharskiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val slika: ImageView = itemView.findViewById(R.id.slikaItem)
+        val nazivItem: TextView = itemView.findViewById(R.id.nazivItem)
+        val profilOkusaItem: TextView = itemView.findViewById(R.id.profilOkusaItem)
+        val jelo1Item: TextView = itemView.findViewById(R.id.jelo1Item)
+        val jelo2Item: TextView = itemView.findViewById(R.id.jelo2Item)
+        val jelo3Item: TextView = itemView.findViewById(R.id.jelo3Item)
+        init {
+            itemView.setOnClickListener {
+                clickedBiljka = biljke[adapterPosition]
+                filterCallback(clickedBiljka)
+            }
+        }
+    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KuharskiHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.kuharski, parent, false)
+        return KuharskiHolder(view)
+    }
     override fun getItemCount(): Int = biljke.size
 
     override fun onBindViewHolder(holder: KuharskiHolder, position: Int) {
-        val biljka = biljke[position]
+        val currentBiljka = biljke[position]
         holder.itemView.setOnClickListener {
-            referentnaBiljka = biljka
-            filterBiljke()
+            val referenceBiljka = biljke[position]
+            val filteredList = mutableListOf<Biljka>()
+            if (referenceBiljka != null) {
+                for (biljka in biljke) {
+                    if (biljka.jela.any { jelo ->
+                            referenceBiljka.jela.contains(jelo)
+                        } || biljka.profilOkusa == referenceBiljka.profilOkusa) {
+                        filteredList.add(biljka)
+                    }
+                }
+            } else {
+                filteredList.addAll(biljke)
+            }
+            updateBiljke(filteredList)
+            filterCallback(referenceBiljka)
         }
-        holder.nazivItem.text = biljka.naziv
-        holder.profilOkusaItem.text = biljka.profilOkusa.opis
+        holder.nazivItem.text = currentBiljka.naziv
+        holder.profilOkusaItem.text = currentBiljka.profilOkusa.opis
         holder.jelo1Item.text = ""
         holder.jelo2Item.text = ""
         holder.jelo3Item.text = ""
 
-        for (i in biljka.jela.indices) {
-            val jelo = biljka.jela[i]
+        for (i in currentBiljka.jela.indices) {
+            val jelo = currentBiljka.jela[i]
             when (i) {
                 0 -> holder.jelo1Item.text = jelo
                 1 -> holder.jelo2Item.text = jelo
@@ -62,20 +95,5 @@ class KuharskiAdapter (
             "eucaliptus", "drawable", holder.itemView.context.packageName
         )
         holder.slika.setImageResource(resourceId)
-    }
-
-
-    fun updateBiljke(biljke: List<Biljka>) {
-        this.biljke = biljke
-        notifyDataSetChanged()
-    }
-
-    inner class KuharskiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val slika: ImageView = itemView.findViewById(R.id.slikaItem)
-        val nazivItem: TextView = itemView.findViewById(R.id.nazivItem)
-        val profilOkusaItem: TextView = itemView.findViewById(R.id.profilOkusaItem)
-        val jelo1Item: TextView = itemView.findViewById(R.id.jelo1Item)
-        val jelo2Item: TextView = itemView.findViewById(R.id.jelo2Item)
-        val jelo3Item: TextView = itemView.findViewById(R.id.jelo3Item)
     }
 }

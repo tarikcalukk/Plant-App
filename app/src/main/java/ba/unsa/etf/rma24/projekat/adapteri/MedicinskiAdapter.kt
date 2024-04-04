@@ -10,71 +10,75 @@ import ba.unsa.etf.rma24.projekat.Biljka
 import ba.unsa.etf.rma24.projekat.R
 
 class MedicinskiAdapter(
-    private var biljke: List<Biljka>,
-    private var referentnaBiljka: Biljka? = null
-    ) : RecyclerView.Adapter<MedicinskiAdapter.medicinskiHolder>() {
-    fun updateReferentnaBiljka(referentnaBiljka: Biljka?) {
-        this.referentnaBiljka = referentnaBiljka
-        filterBiljke()
+    var biljke: List<Biljka>,
+    private val filterCallback: (Biljka?) -> Unit
+) : RecyclerView.Adapter<MedicinskiAdapter.MedicinskiHolder>() {
+    private var clickedBiljka: Biljka? = null
+    fun updateBiljke(updatedList: List<Biljka>) {
+        biljke = updatedList
         notifyDataSetChanged()
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): medicinskiHolder {
-        val view = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.medicinski, parent, false)
-        return medicinskiHolder(view)
-    }
-
-    override fun getItemCount(): Int = biljke.size
-
-    override fun onBindViewHolder(holder: medicinskiHolder, position: Int) {
-        val biljka = biljke[position]
-        holder.itemView.setOnClickListener {
-            val referenceBiljka = biljke[position]
-
-            val filteredBiljke = biljke.filter { otherBiljka ->
-                otherBiljka.medicinskeKoristi.any { korist ->
-                    referenceBiljka.medicinskeKoristi.contains(korist)
+    fun filter(reference: Biljka?) {
+        val filteredList = mutableListOf<Biljka>()
+        if (reference != null) {
+            for (biljka in biljke) {
+                if (biljka.medicinskeKoristi.any { korist ->
+                        reference.medicinskeKoristi.contains(korist)
+                    }) {
+                    filteredList.add(biljka)
                 }
             }
-            biljke = filteredBiljke
-            notifyDataSetChanged()
+        } else {
+            filteredList.addAll(biljke)
         }
-        holder.nazivItem.text = biljka.naziv
-        holder.upozorenjeItem.text = biljka.medicinskoUpozorenje
-        holder.korist1Item.text = biljka.medicinskeKoristi.getOrNull(0)?.opis ?: ""
-        holder.korist2Item.text = biljka.medicinskeKoristi.getOrNull(1)?.opis ?: ""
-        holder.korist3Item.text = biljka.medicinskeKoristi.getOrNull(2)?.opis ?: ""
-
-        val resourceId = holder.itemView.context.resources.getIdentifier(
-            "eucaliptus", "drawable", holder.itemView.context.packageName
-        )
-        holder.slika.setImageResource(resourceId)
+        updateBiljke(filteredList)
     }
-
-    fun updateBiljke(biljke: List<Biljka>) {
-        this.biljke = biljke
-        notifyDataSetChanged()
-    }
-
-    inner class medicinskiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class MedicinskiHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val slika: ImageView = itemView.findViewById(R.id.slikaItem)
         val nazivItem: TextView = itemView.findViewById(R.id.nazivItem)
         val upozorenjeItem: TextView = itemView.findViewById(R.id.upozorenjeItem)
         val korist1Item: TextView = itemView.findViewById(R.id.korist1Item)
         val korist2Item: TextView = itemView.findViewById(R.id.korist2Item)
         val korist3Item: TextView = itemView.findViewById(R.id.korist3Item)
-    }
-
-    private fun filterBiljke(): List<Biljka> {
-        return if (referentnaBiljka != null) {
-            biljke.filter { biljka ->
-                biljka.medicinskeKoristi.any { korist ->
-                    referentnaBiljka?.medicinskeKoristi?.contains(korist) ?: false
-                }
+        init {
+            itemView.setOnClickListener {
+                clickedBiljka = biljke[adapterPosition]
+                filterCallback(clickedBiljka)
             }
-        } else {
-            biljke
         }
+    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MedicinskiHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.medicinski, parent, false)
+        return MedicinskiHolder(view)
+    }
+    override fun getItemCount(): Int = biljke.size
+    override fun onBindViewHolder(holder: MedicinskiHolder, position: Int) {
+        val currentBiljka = biljke[position]
+        holder.itemView.setOnClickListener {
+            val referenceBiljka = biljke[holder.adapterPosition]
+            val filteredList = mutableListOf<Biljka>()
+            if (referenceBiljka != null) {
+                for (biljka in biljke) {
+                    if (biljka.medicinskeKoristi.any { korist ->
+                            referenceBiljka.medicinskeKoristi.contains(korist)
+                        }) {
+                        filteredList.add(biljka)
+                    }
+                }
+            } else {
+                filteredList.addAll(biljke)
+            }
+            updateBiljke(filteredList)
+            filterCallback(referenceBiljka)
+        }
+        holder.nazivItem.text = currentBiljka.naziv
+        holder.upozorenjeItem.text = currentBiljka.medicinskoUpozorenje
+        holder.korist1Item.text = currentBiljka.medicinskeKoristi.getOrNull(0)?.opis ?: ""
+        holder.korist2Item.text = currentBiljka.medicinskeKoristi.getOrNull(1)?.opis ?: ""
+        holder.korist3Item.text = currentBiljka.medicinskeKoristi.getOrNull(2)?.opis ?: ""
+        val resourceId = holder.itemView.context.resources.getIdentifier(
+            "eucaliptus", "drawable", holder.itemView.context.packageName
+        )
+        holder.slika.setImageResource(resourceId)
     }
 }
