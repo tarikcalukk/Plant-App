@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma24.projekat
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -13,27 +14,30 @@ import androidx.recyclerview.widget.RecyclerView
 import ba.unsa.etf.rma24.projekat.adapteri.BotanickiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.KuharskiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.MedicinskiAdapter
+import ba.unsa.etf.rma24.projekat.pomocneKlase.biljke
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var spinner: Spinner
     private lateinit var button: Button
-    private lateinit var biljke: RecyclerView
+    private lateinit var biljka: RecyclerView
+    private lateinit var novaBiljkaBtn : Button
     private lateinit var botanickiAdapter: BotanickiAdapter
     private lateinit var medicinskiAdapter: MedicinskiAdapter
     private lateinit var kuharskiAdapter: KuharskiAdapter
     private var trenutniMod: String = "Medicinski"
-    private var listaBiljaka = ba.unsa.etf.rma24.projekat.pomocneKlase.biljke
-    private var filtriraneBiljke = ba.unsa.etf.rma24.projekat.pomocneKlase.biljke
+    private var listaBiljaka = biljke
+    private var filtriraneBiljke = biljke
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        biljke = findViewById(R.id.biljkeRV)
+        biljka = findViewById(R.id.biljkeRV)
         spinner = findViewById(R.id.modSpinner)
         button = findViewById(R.id.resetBtn)
+        novaBiljkaBtn = findViewById(R.id.novaBiljkaBtn)
         val arraySpinner = listOf(
             "Medicinski",
             "Kuharski",
@@ -47,28 +51,32 @@ class MainActivity : AppCompatActivity() {
         kuharskiAdapter = KuharskiAdapter(listOf()) { biljka -> kuharskiAdapter.filter(biljka) }
         botanickiAdapter = BotanickiAdapter(listOf()) { biljka -> botanickiAdapter.filter(biljka) }
 
-        biljke.layoutManager =
+        biljka.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        biljke.adapter = medicinskiAdapter
+        biljka.adapter = medicinskiAdapter
         medicinskiAdapter.updateBiljke(listaBiljaka)
 
         button.setOnClickListener {
-            filtriraneBiljke = ba.unsa.etf.rma24.projekat.pomocneKlase.biljke
-            if (trenutniMod == "Medicinski") {
-                biljke.adapter =
-                    MedicinskiAdapter(filtriraneBiljke) { biljka -> medicinskiAdapter.filter(biljka) }
-                medicinskiAdapter.updateBiljke(filtriraneBiljke)
-                medicinskiAdapter.notifyDataSetChanged()
-            } else if (trenutniMod == "Botanicki") {
-                biljke.adapter =
-                    BotanickiAdapter(filtriraneBiljke) { biljka -> botanickiAdapter.filter(biljka) }
-                botanickiAdapter.updateBiljke(filtriraneBiljke)
-                botanickiAdapter.notifyDataSetChanged()
-            } else {
-                biljke.adapter =
-                    KuharskiAdapter(filtriraneBiljke) { biljka -> kuharskiAdapter.filter(biljka) }
-                kuharskiAdapter.updateBiljke(filtriraneBiljke)
-                kuharskiAdapter.notifyDataSetChanged()
+            filtriraneBiljke = biljke
+            when (trenutniMod) {
+                "Medicinski" -> {
+                    biljka.adapter =
+                        MedicinskiAdapter(filtriraneBiljke) { biljka -> medicinskiAdapter.filter(biljka) }
+                    medicinskiAdapter.updateBiljke(filtriraneBiljke)
+                    medicinskiAdapter.notifyDataSetChanged()
+                }
+                "Botanicki" -> {
+                    biljka.adapter =
+                        BotanickiAdapter(filtriraneBiljke) { biljka -> botanickiAdapter.filter(biljka) }
+                    botanickiAdapter.updateBiljke(filtriraneBiljke)
+                    botanickiAdapter.notifyDataSetChanged()
+                }
+                else -> {
+                    biljka.adapter =
+                        KuharskiAdapter(filtriraneBiljke) { biljka -> kuharskiAdapter.filter(biljka) }
+                    kuharskiAdapter.updateBiljke(filtriraneBiljke)
+                    kuharskiAdapter.notifyDataSetChanged()
+                }
             }
         }
 
@@ -82,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                 if (spinner.selectedItem.toString() == "Medicinski") {
                     if (trenutniMod == "Botanicki") filtriraneBiljke = botanickiAdapter.biljke
                     if (trenutniMod == "Kuharski") filtriraneBiljke = kuharskiAdapter.biljke
-                    biljke.adapter =
+                    biljka.adapter =
                         MedicinskiAdapter(filtriraneBiljke) { biljka -> medicinskiAdapter.filter(biljka) }
                     medicinskiAdapter.updateBiljke(filtriraneBiljke)
                     medicinskiAdapter.notifyDataSetChanged()
@@ -90,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                 } else if (spinner.selectedItem.toString() == "Kuharski") {
                     if (trenutniMod == "Medicinski") filtriraneBiljke = medicinskiAdapter.biljke
                     if (trenutniMod == "Botanicki") filtriraneBiljke = botanickiAdapter.biljke
-                    biljke.adapter =
+                    biljka.adapter =
                         KuharskiAdapter(filtriraneBiljke) { biljka -> kuharskiAdapter.filter(biljka) }
                     kuharskiAdapter.updateBiljke(filtriraneBiljke)
                     kuharskiAdapter.notifyDataSetChanged()
@@ -98,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     if (trenutniMod == "Medicinski") filtriraneBiljke = medicinskiAdapter.biljke
                     if (trenutniMod == "Kuharski") filtriraneBiljke = kuharskiAdapter.biljke
-                    biljke.adapter =
+                    biljka.adapter =
                         BotanickiAdapter(filtriraneBiljke) { biljka -> botanickiAdapter.filter(biljka) }
                     botanickiAdapter.updateBiljke(filtriraneBiljke)
                     botanickiAdapter.notifyDataSetChanged()
@@ -106,6 +114,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+        novaBiljkaBtn.setOnClickListener {
+            val intent = Intent(this, NovaBiljkaActivity::class.java)
+            startActivity(intent)
         }
     }
 }
