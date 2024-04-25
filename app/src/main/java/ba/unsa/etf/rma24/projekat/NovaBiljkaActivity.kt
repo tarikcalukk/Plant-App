@@ -1,4 +1,5 @@
 package ba.unsa.etf.rma24.projekat
+
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -18,7 +19,6 @@ import ba.unsa.etf.rma24.projekat.pomocneKlase.Zemljiste
 import java.util.*
 
 class NovaBiljkaActivity : AppCompatActivity() {
-
     private lateinit var nazivET: EditText
     private lateinit var porodicaET: EditText
     private lateinit var medicinskoUpozorenjeET: EditText
@@ -32,12 +32,9 @@ class NovaBiljkaActivity : AppCompatActivity() {
     private lateinit var dodajJeloBtn: Button
     private lateinit var dodajBiljkuBtn: Button
     private lateinit var uslikajBiljkuBtn: Button
-
-
     companion object {
         const val REQUEST_IMAGE_CAPTURE = 1
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +53,6 @@ class NovaBiljkaActivity : AppCompatActivity() {
         dodajJeloBtn = findViewById(R.id.dodajJeloBtn)
         dodajBiljkuBtn = findViewById(R.id.dodajBiljkuBtn)
         uslikajBiljkuBtn = findViewById(R.id.uslikajBiljkuBtn)
-
 
         medicinskaKoristLV.adapter = ArrayAdapter(
             this,
@@ -83,51 +79,69 @@ class NovaBiljkaActivity : AppCompatActivity() {
             android.R.layout.simple_list_item_1
         )
 
-        jelaLV.setOnItemClickListener { parent, _, position, _ ->
-            jeloET.setText(parent.getItemAtPosition(position).toString())
+        val adapter = jelaLV.adapter as ArrayAdapter<String>
+
+        jelaLV.setOnItemClickListener { _, _, position, _ ->
+            val selektovanoJelo = adapter.getItem(position)
+            jeloET.setText(selektovanoJelo)
+            dodajJeloBtn.text = "Izmijeni jelo"
+            dodajJeloBtn.tag = position
         }
 
         dodajJeloBtn.setOnClickListener {
-            val novoJelo = jeloET.text.toString().trim()
+            val novoJelo = jeloET.text.toString().trim().lowercase()
             if (novoJelo.isNotEmpty()) {
-                val adapter = jelaLV.adapter as ArrayAdapter<String>
-                val indexPostojecegJela = adapter.getPosition(novoJelo)
-                if (indexPostojecegJela != -1) {
-                    jeloET.setText(novoJelo)
-                    dodajJeloBtn.text = "Izmijeni jelo"
-                    jelaLV.setItemChecked(indexPostojecegJela, true)
+                val indexPostojecegJela = dodajJeloBtn.tag as? Int
+                if (indexPostojecegJela != null) {
+                    val postojeceJelo = adapter.getItem(indexPostojecegJela)
+                    if (postojeceJelo?.toLowerCase() == novoJelo) {
+                        // Ako je novo ime isto kao i staro, samo ažuriraj UI
+                        adapter.remove(postojeceJelo)
+                        adapter.insert(novoJelo, indexPostojecegJela)
+                    } else {
+                        // Provjeravamo da li već postoji jelo s istim imenom
+                        if (!adapterItemsContain(adapter, novoJelo)) {
+                            adapter.remove(postojeceJelo)
+                            adapter.insert(novoJelo, indexPostojecegJela)
+                        } else {
+                            // Obavijestite korisnika da je jelo već dodano
+                            Toast.makeText(this, "Jelo već postoji u listi.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 } else {
-                    adapter.add(novoJelo)
-                    jeloET.text.clear()
-                }
-            } else {
-                val adapter = jelaLV.adapter as ArrayAdapter<String>
-                val selektovanoJelo = jelaLV.checkedItemPosition
-                if (selektovanoJelo != ListView.INVALID_POSITION) {
-                    adapter.remove(adapter.getItem(selektovanoJelo))
+                    // Provjeravamo da li već postoji jelo s istim imenom
+                    if (!adapterItemsContain(adapter, novoJelo)) {
+                        adapter.add(novoJelo)
+                    } else {
+                        // Obavijestite korisnika da je jelo već dodano
+                        Toast.makeText(this, "Jelo već postoji u listi.", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 jeloET.text.clear()
                 dodajJeloBtn.text = "Dodaj jelo"
+                dodajJeloBtn.tag = null
+            } else {
+                val selectedItemPosition = jelaLV.selectedItemPosition
+                if (selectedItemPosition != ListView.INVALID_POSITION) {
+                    adapter.remove(adapter.getItem(selectedItemPosition))
+                }
+                jeloET.text.clear()
+                dodajJeloBtn.text = "Dodaj jelo"
+                dodajJeloBtn.tag = null
             }
         }
 
         dodajBiljkuBtn.setOnClickListener {
-            val naziv = nazivET.text.toString().trim()
-            val porodica = porodicaET.text.toString().trim()
-            val medicinskoUpozorenje = medicinskoUpozorenjeET.text.toString().trim()
-            val odabranaJela = mutableListOf<String>()
-            val adapter = jelaLV.adapter as ArrayAdapter<String>
-            for (i in 0 until adapter.count) {
-                if (jelaLV.isItemChecked(i)) {
-                    odabranaJela.add(adapter.getItem(i)!!)
+            if (validacijaPolja()) {
+                val odabranaJela = mutableListOf<String>()
+                val adapter = jelaLV.adapter as ArrayAdapter<String>
+                for (i in 0 until adapter.count) {
+                    if (jelaLV.isItemChecked(i)) {
+                        odabranaJela.add(adapter.getItem(i)!!)
+                    }
                 }
-            }
-
-            if (naziv.isNotEmpty() && porodica.isNotEmpty() && medicinskoUpozorenje.isNotEmpty() && odabranaJela.isNotEmpty()) {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
-            } else {
-                Toast.makeText(this, "Molimo popunite sva obavezna polja.", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -147,5 +161,73 @@ class NovaBiljkaActivity : AppCompatActivity() {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             slikaIV.setImageBitmap(imageBitmap)
         }
+    }
+    private fun adapterItemsContain(adapter: ArrayAdapter<String>, novoJelo: String): Boolean {
+        for (i in 0 until adapter.count) {
+            if (adapter.getItem(i)?.lowercase() == novoJelo) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun validacijaPolja(): Boolean {
+        val naziv = nazivET.text.toString().trim()
+        val porodica = porodicaET.text.toString().trim()
+        val medicinskoUpozorenje = medicinskoUpozorenjeET.text.toString().trim()
+        val jelo = jeloET.text.toString().trim()
+        val odabranaJela = mutableListOf<String>()
+        val adapter = jelaLV.adapter as ArrayAdapter<String>
+        for (i in 0 until adapter.count) {
+            odabranaJela.add(adapter.getItem(i)!!)
+        }
+
+        if (naziv.length !in 3..19) {
+            nazivET.error = "Naziv mora biti između 3 i 19 znakova"
+            return false
+        }
+        if (porodica.length !in 3..19) {
+            porodicaET.error = "Porodica mora biti između 3 i 19 znakova"
+            return false
+        }
+        if (medicinskoUpozorenje.length !in 3..19) {
+            medicinskoUpozorenjeET.error = "Medicinsko upozorenje mora biti između 3 i 19 znakova"
+            return false
+        }
+        if (jelo.length !in 3..19) {
+            jeloET.error = "Jelo mora biti izmedju 3 i 19 znakova"
+            return false
+        }
+
+        val lowercaseJela = odabranaJela.map { it.lowercase() }
+        val uniqueLowercaseJela = lowercaseJela.toSet()
+        if (lowercaseJela.size != uniqueLowercaseJela.size) {
+            Toast.makeText(this, "Postoji duplikat", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+
+
+        if (medicinskaKoristLV.checkedItemCount == 0) {
+            Toast.makeText(this, "Nije odabrana nijedna medicinski korisna vrijednost", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (klimatskiTipLV.checkedItemCount == 0) {
+            Toast.makeText(this, "Nije odabran nijedan klimatski tip", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (zemljisniTipLV.checkedItemCount == 0) {
+            Toast.makeText(this, "Nije odabran nijedan tip zemljišta", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        val selectedProfilePosition = profilOkusaLV.checkedItemPosition
+        if (selectedProfilePosition == ListView.INVALID_POSITION) {
+            Toast.makeText(this, "Nije odabran nijedan profil okusa", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 }
