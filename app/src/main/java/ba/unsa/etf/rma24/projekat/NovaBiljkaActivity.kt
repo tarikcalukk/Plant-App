@@ -11,7 +11,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
 import ba.unsa.etf.rma24.projekat.pomocneKlase.KlimatskiTip
 import ba.unsa.etf.rma24.projekat.pomocneKlase.MedicinskaKorist
 import ba.unsa.etf.rma24.projekat.pomocneKlase.ProfilOkusaBiljke
@@ -32,9 +34,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
     private lateinit var dodajJeloBtn: Button
     private lateinit var dodajBiljkuBtn: Button
     private lateinit var uslikajBiljkuBtn: Button
-    companion object {
-        const val REQUEST_IMAGE_CAPTURE = 1
-    }
+    private val request = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,26 +94,21 @@ class NovaBiljkaActivity : AppCompatActivity() {
                 val indexPostojecegJela = dodajJeloBtn.tag as? Int
                 if (indexPostojecegJela != null) {
                     val postojeceJelo = adapter.getItem(indexPostojecegJela)
-                    if (postojeceJelo?.toLowerCase() == novoJelo) {
-                        // Ako je novo ime isto kao i staro, samo ažuriraj UI
+                    if (postojeceJelo?.lowercase() == novoJelo) {
                         adapter.remove(postojeceJelo)
                         adapter.insert(novoJelo, indexPostojecegJela)
                     } else {
-                        // Provjeravamo da li već postoji jelo s istim imenom
                         if (!adapterItemsContain(adapter, novoJelo)) {
                             adapter.remove(postojeceJelo)
                             adapter.insert(novoJelo, indexPostojecegJela)
                         } else {
-                            // Obavijestite korisnika da je jelo već dodano
                             Toast.makeText(this, "Jelo već postoji u listi.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } else {
-                    // Provjeravamo da li već postoji jelo s istim imenom
                     if (!adapterItemsContain(adapter, novoJelo)) {
                         adapter.add(novoJelo)
                     } else {
-                        // Obavijestite korisnika da je jelo već dodano
                         Toast.makeText(this, "Jelo već postoji u listi.", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -133,32 +128,75 @@ class NovaBiljkaActivity : AppCompatActivity() {
 
         dodajBiljkuBtn.setOnClickListener {
             if (validacijaPolja()) {
+                val naziv = nazivET.text.toString().trim()
+                val porodica = porodicaET.text.toString().trim()
+                val medicinskoUpozorenje = medicinskoUpozorenjeET.text.toString().trim()
                 val odabranaJela = mutableListOf<String>()
                 val adapter = jelaLV.adapter as ArrayAdapter<String>
                 for (i in 0 until adapter.count) {
-                    if (jelaLV.isItemChecked(i)) {
-                        odabranaJela.add(adapter.getItem(i)!!)
+                    odabranaJela.add(adapter.getItem(i)!!)
+                }
+                val odabraniProfilOkusa = ProfilOkusaBiljke.valueOf(profilOkusaLV.getItemAtPosition(profilOkusaLV.checkedItemPosition).toString())
+                val odabraniKlimatskiTipovi = mutableListOf<KlimatskiTip>()
+                for (i in 0 until klimatskiTipLV.count) {
+                    if (klimatskiTipLV.isItemChecked(i)) {
+                        val klimatskiTip = KlimatskiTip.entries[i]
+                        odabraniKlimatskiTipovi.add(klimatskiTip)
                     }
                 }
+
+                val odabraniZemljisniTipovi = mutableListOf<Zemljiste>()
+                for (i in 0 until zemljisniTipLV.count) {
+                    if (zemljisniTipLV.isItemChecked(i)) {
+                        odabraniZemljisniTipovi.add(Zemljiste.valueOf(zemljisniTipLV.getItemAtPosition(i).toString()))
+                    }
+                }
+
+                val odabraneMedicinskeKoristi = mutableListOf<MedicinskaKorist>()
+                val checkedPositions = medicinskaKoristLV.checkedItemPositions
+                for (i in 0 until medicinskaKoristLV.count) {
+                    if (checkedPositions.get(i)) {
+                        odabraneMedicinskeKoristi.add(MedicinskaKorist.valueOf(medicinskaKoristLV.getItemAtPosition(i).toString()))
+                    }
+                }
+                val novaBiljka = Biljka(
+                    naziv,
+                    porodica,
+                    medicinskoUpozorenje,
+                    odabraneMedicinskeKoristi,
+                    odabranaJela,
+                    odabraniProfilOkusa,
+                    odabraniKlimatskiTipovi,
+                    odabraniZemljisniTipovi
+                )
+                BiljkaSingleton.listaBiljaka.add(novaBiljka)
+
                 val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
             }
         }
 
         uslikajBiljkuBtn.setOnClickListener {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            // Provjeravamo da li postoji aplikacija za kameru na uređaju
             if (takePictureIntent.resolveActivity(packageManager) != null) {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                takePictureLauncher.launch(takePictureIntent) // Korištenje ActivityResultLauncher-a za pokretanje aktivnosti
             } else {
-                Toast.makeText(this, "Aplikacija za kameru nije dostupna.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Aplikacija za kameru nije dostupna.", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == request && resultCode == Activity.RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
+            slikaIV.setImageBitmap(imageBitmap)
+        }
+    }
+    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val imageBitmap = result.data?.extras?.get("data") as Bitmap
             slikaIV.setImageBitmap(imageBitmap)
         }
     }
@@ -182,20 +220,20 @@ class NovaBiljkaActivity : AppCompatActivity() {
             odabranaJela.add(adapter.getItem(i)!!)
         }
 
-        if (naziv.length !in 3..19) {
-            nazivET.error = "Naziv mora biti između 3 i 19 znakova"
+        if (naziv.length !in 2..20) {
+            nazivET.error = "Naziv mora biti između 2 i 20 znakova"
             return false
         }
-        if (porodica.length !in 3..19) {
-            porodicaET.error = "Porodica mora biti između 3 i 19 znakova"
+        if (porodica.length !in 2..20) {
+            porodicaET.error = "Porodica mora biti između 2 i 20 znakova"
             return false
         }
-        if (medicinskoUpozorenje.length !in 3..19) {
-            medicinskoUpozorenjeET.error = "Medicinsko upozorenje mora biti između 3 i 19 znakova"
+        if (medicinskoUpozorenje.length !in 2..20) {
+            medicinskoUpozorenjeET.error = "Medicinsko upozorenje mora biti između 2 i 20 znakova"
             return false
         }
-        if (jelo.length !in 3..19) {
-            jeloET.error = "Jelo mora biti izmedju 3 i 19 znakova"
+        if (jelo.length !in 2..20) {
+            jeloET.error = "Jelo mora biti izmedju 2 i 20 znakova"
             return false
         }
 
@@ -205,8 +243,6 @@ class NovaBiljkaActivity : AppCompatActivity() {
             Toast.makeText(this, "Postoji duplikat", Toast.LENGTH_SHORT).show()
             return false
         }
-
-
 
         if (medicinskaKoristLV.checkedItemCount == 0) {
             Toast.makeText(this, "Nije odabrana nijedna medicinski korisna vrijednost", Toast.LENGTH_SHORT).show()

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ba.unsa.etf.rma24.projekat.adapteri.BotanickiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.KuharskiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.MedicinskiAdapter
+import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
 import ba.unsa.etf.rma24.projekat.pomocneKlase.biljke
 
 
@@ -26,8 +27,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var medicinskiAdapter: MedicinskiAdapter
     private lateinit var kuharskiAdapter: KuharskiAdapter
     private var trenutniMod: String = "Medicinski"
-    private var listaBiljaka = biljke
-    private var filtriraneBiljke = biljke
+    private var filtriraneBiljke = BiljkaSingleton.filtriraneBiljke
+    private var listaBiljaka = BiljkaSingleton.listaBiljaka
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         medicinskiAdapter.updateBiljke(listaBiljaka)
 
         button.setOnClickListener {
-            filtriraneBiljke = biljke
+            filtriraneBiljke = BiljkaSingleton.listaBiljaka
             when (trenutniMod) {
                 "Medicinski" -> {
                     biljka.adapter =
@@ -119,5 +120,22 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, NovaBiljkaActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        spinner.setSelection(0)
+        if (trenutniMod == "Medicinski") {
+            updateMedicinskiRecyclerView()
+        } else {
+            listaBiljaka = BiljkaSingleton.listaBiljaka
+            spinner.setSelection(0)
+            updateMedicinskiRecyclerView()
+        }
+    }
+    private fun updateMedicinskiRecyclerView() {
+        biljka.adapter = MedicinskiAdapter(listaBiljaka) { biljka -> medicinskiAdapter.filter(biljka) }
+        medicinskiAdapter.updateBiljke(listaBiljaka)
+        medicinskiAdapter.notifyDataSetChanged()
     }
 }
