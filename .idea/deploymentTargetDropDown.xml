@@ -2,10 +2,7 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="MainActivity">
-        <State />
-      </entry>
-      <entry key="TestS1">
+      <entry key="TestS2">
         <State />
       </entry>
       <entry key="app">
@@ -23,6 +20,18 @@
           </targetSelectedWithDropDown>
           <timeTargetWasSelectedWithDropDown value="2024-03-29T20:38:00.375021400Z" />
         </State>
+      </entry>
+      <entry key="testUslikajBiljkuBtn()">
+        <State />
+      </entry>
+      <entry key="testValidacijaBarJednoJelo()">
+        <State />
+      </entry>
+      <entry key="testValidacijaDuplikata()">
+        <State />
+      </entry>
+      <entry key="testValidacijaMedicinskaKoristLV()">
+        <State />
       </entry>
     </value>
   </component>

@@ -15,8 +15,6 @@ import ba.unsa.etf.rma24.projekat.adapteri.BotanickiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.KuharskiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.MedicinskiAdapter
 import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
-import ba.unsa.etf.rma24.projekat.pomocneKlase.biljke
-
 
 class MainActivity : AppCompatActivity() {
     private lateinit var spinner: Spinner
@@ -121,7 +119,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
     override fun onResume() {
         super.onResume()
         spinner.setSelection(0)

@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
@@ -89,8 +88,9 @@ class NovaBiljkaActivity : AppCompatActivity() {
         }
 
         dodajJeloBtn.setOnClickListener {
+            var prethodnaVrednostJela: String = ""
             val novoJelo = jeloET.text.toString().trim().lowercase()
-            if (novoJelo.isNotEmpty()) {
+            if (novoJelo.length in 2..20) {
                 val indexPostojecegJela = dodajJeloBtn.tag as? Int
                 if (indexPostojecegJela != null) {
                     val postojeceJelo = adapter.getItem(indexPostojecegJela)
@@ -102,29 +102,38 @@ class NovaBiljkaActivity : AppCompatActivity() {
                             adapter.remove(postojeceJelo)
                             adapter.insert(novoJelo, indexPostojecegJela)
                         } else {
-                            Toast.makeText(this, "Jelo već postoji u listi.", Toast.LENGTH_SHORT).show()
+                            dodajJeloBtn.error = "Jelo već postoji u listi"
                         }
                     }
                 } else {
                     if (!adapterItemsContain(adapter, novoJelo)) {
                         adapter.add(novoJelo)
                     } else {
-                        Toast.makeText(this, "Jelo već postoji u listi.", Toast.LENGTH_SHORT).show()
+                        dodajJeloBtn.error = "Jelo već postoji u listi"
                     }
                 }
                 jeloET.text.clear()
                 dodajJeloBtn.text = "Dodaj jelo"
                 dodajJeloBtn.tag = null
-            } else {
-                val selectedItemPosition = jelaLV.selectedItemPosition
-                if (selectedItemPosition != ListView.INVALID_POSITION) {
-                    adapter.remove(adapter.getItem(selectedItemPosition))
+                prethodnaVrednostJela = novoJelo
+
+            }
+            else if (novoJelo.length == 1) {
+                /* Ako se pokuša promijeniti naziv jela a da ima samo 1 znak,
+                 ostavlja se stara vrijednost koja je bila! */
+                jeloET.setText(prethodnaVrednostJela)
+            }
+            else {
+                val indexPostojecegJela = dodajJeloBtn.tag as? Int
+                if (indexPostojecegJela != null) {
+                    adapter.remove(adapter.getItem(indexPostojecegJela))
                 }
                 jeloET.text.clear()
                 dodajJeloBtn.text = "Dodaj jelo"
                 dodajJeloBtn.tag = null
             }
         }
+
 
         dodajBiljkuBtn.setOnClickListener {
             if (validacijaPolja()) {
@@ -182,12 +191,11 @@ class NovaBiljkaActivity : AppCompatActivity() {
             if (takePictureIntent.resolveActivity(packageManager) != null) {
                 takePictureLauncher.launch(takePictureIntent) // Korištenje ActivityResultLauncher-a za pokretanje aktivnosti
             } else {
-                Toast.makeText(this, "Aplikacija za kameru nije dostupna.", Toast.LENGTH_SHORT)
-                    .show()
+                dodajBiljkuBtn.error = "Aplikacija za kameru nije dostupna"
             }
         }
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == request && resultCode == Activity.RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
@@ -210,6 +218,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
     }
 
     private fun validacijaPolja(): Boolean {
+        var validacija = true
         val naziv = nazivET.text.toString().trim()
         val porodica = porodicaET.text.toString().trim()
         val medicinskoUpozorenje = medicinskoUpozorenjeET.text.toString().trim()
@@ -222,48 +231,53 @@ class NovaBiljkaActivity : AppCompatActivity() {
 
         if (naziv.length !in 2..20) {
             nazivET.error = "Naziv mora biti između 2 i 20 znakova"
-            return false
+            validacija = false
         }
         if (porodica.length !in 2..20) {
             porodicaET.error = "Porodica mora biti između 2 i 20 znakova"
-            return false
+            validacija = false
         }
         if (medicinskoUpozorenje.length !in 2..20) {
             medicinskoUpozorenjeET.error = "Medicinsko upozorenje mora biti između 2 i 20 znakova"
-            return false
+            validacija = false
         }
         if (jelo.length !in 2..20) {
-            jeloET.error = "Jelo mora biti izmedju 2 i 20 znakova"
-            return false
+            jeloET.error = "Jelo mora biti između 2 i 20 znakova"
+            validacija = false
+        }
+
+        if (odabranaJela.isEmpty()) {
+            dodajBiljkuBtn.error = "Bar jedno jelo mora biti dodano"
+            validacija = false
         }
 
         val lowercaseJela = odabranaJela.map { it.lowercase() }
         val uniqueLowercaseJela = lowercaseJela.toSet()
         if (lowercaseJela.size != uniqueLowercaseJela.size) {
-            Toast.makeText(this, "Postoji duplikat", Toast.LENGTH_SHORT).show()
-            return false
+            dodajBiljkuBtn.error = "Postoji duplikat"
+            validacija = false
         }
 
         if (medicinskaKoristLV.checkedItemCount == 0) {
-            Toast.makeText(this, "Nije odabrana nijedna medicinski korisna vrijednost", Toast.LENGTH_SHORT).show()
-            return false
+            dodajBiljkuBtn.error = "Nije odabrana nijedna medicinski korisna vrijednost"
+            validacija = false
         }
 
         if (klimatskiTipLV.checkedItemCount == 0) {
-            Toast.makeText(this, "Nije odabran nijedan klimatski tip", Toast.LENGTH_SHORT).show()
-            return false
+            dodajBiljkuBtn.error = "Nije odabran nijedan klimatski tip"
+            validacija = false
         }
 
         if (zemljisniTipLV.checkedItemCount == 0) {
-            Toast.makeText(this, "Nije odabran nijedan tip zemljišta", Toast.LENGTH_SHORT).show()
-            return false
+            dodajBiljkuBtn.error = "Nije odabran nijedan tip zemljišta"
+            validacija = false
         }
 
         val selectedProfilePosition = profilOkusaLV.checkedItemPosition
         if (selectedProfilePosition == ListView.INVALID_POSITION) {
-            Toast.makeText(this, "Nije odabran nijedan profil okusa", Toast.LENGTH_SHORT).show()
-            return false
+            dodajBiljkuBtn.error = "Nije odabran nijedan profil okusa"
+            validacija = false
         }
-        return true
+        return validacija
     }
 }

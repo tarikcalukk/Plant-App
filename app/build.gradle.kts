@@ -36,15 +36,19 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.espresso.contrib)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
-
+    androidTestImplementation ("androidx.test:core-ktx:1.5.0")
+    androidTestImplementation ("androidx.test.ext:junit-ktx:1.1.5")
+    androidTestImplementation ("androidx.test.espresso:espresso-contrib:+")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+    testImplementation ("org.hamcrest:hamcrest:2.2")
+    implementation("com.google.android.material:material:+")
 }
