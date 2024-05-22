@@ -1,7 +1,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="388dp"
-    android:layout_height="213dp"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
     android:layout_marginEnd="8dp"
     app:cardBackgroundColor="#d9ead3"
     app:cardCornerRadius="4dp">
@@ -26,7 +26,7 @@
         <TextView
             android:id="@+id/nazivItem"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
@@ -41,7 +41,7 @@
         <TextView
             android:id="@+id/porodicaItem"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
@@ -56,7 +56,7 @@
         <TextView
             android:id="@+id/klimatskiTipItem"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
@@ -71,7 +71,7 @@
         <TextView
             android:id="@+id/zemljisniTipItem"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"

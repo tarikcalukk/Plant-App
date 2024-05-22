@@ -47,8 +47,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation ("androidx.test:core-ktx:1.5.0")
     androidTestImplementation ("androidx.test.ext:junit-ktx:1.1.5")
-    androidTestImplementation ("androidx.test.espresso:espresso-contrib:+")
+    androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
     testImplementation ("org.hamcrest:hamcrest:2.2")
-    implementation("com.google.android.material:material:+")
+    implementation("com.google.android.material:material:1.12.0")
 }
