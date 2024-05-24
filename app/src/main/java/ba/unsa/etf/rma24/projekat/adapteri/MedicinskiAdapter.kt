@@ -8,6 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ba.unsa.etf.rma24.projekat.Biljka
 import ba.unsa.etf.rma24.projekat.R
+import ba.unsa.etf.rma24.projekat.TrefleDAO
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MedicinskiAdapter(
     var biljke: List<Biljka>,
@@ -76,9 +80,12 @@ class MedicinskiAdapter(
         holder.korist1Item.text = currentBiljka.medicinskeKoristi.getOrNull(0)?.opis ?: ""
         holder.korist2Item.text = currentBiljka.medicinskeKoristi.getOrNull(1)?.opis ?: ""
         holder.korist3Item.text = currentBiljka.medicinskeKoristi.getOrNull(2)?.opis ?: ""
-        val resourceId = holder.itemView.context.resources.getIdentifier(
-            "eucaliptus", "drawable", holder.itemView.context.packageName
-        )
-        holder.slika.setImageResource(resourceId)
+
+        val trefleDAO = TrefleDAO()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val bitmap = trefleDAO.getImage(currentBiljka)
+            holder.slika.setImageBitmap(bitmap)
+        }
     }
 }

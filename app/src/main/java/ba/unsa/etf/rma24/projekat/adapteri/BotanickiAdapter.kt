@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma24.projekat.adapteri
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ba.unsa.etf.rma24.projekat.Biljka
 import ba.unsa.etf.rma24.projekat.R
+import ba.unsa.etf.rma24.projekat.TrefleDAO
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class BotanickiAdapter(
     var biljke: List<Biljka>,
@@ -78,9 +83,12 @@ class BotanickiAdapter(
         holder.porodicaItem.text = currentBiljka.porodica
         holder.klimatskiTipItem.text = currentBiljka.klimatskiTipovi[0].opis
         holder.zemljisniTipItem.text = currentBiljka.zemljisniTipovi[0].naziv
-        val resourceId = holder.itemView.context.resources.getIdentifier(
-            "eucaliptus", "drawable", holder.itemView.context.packageName
-        )
-        holder.slika.setImageResource(resourceId)
+
+        val trefleDAO = TrefleDAO()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val bitmap = trefleDAO.getImage(currentBiljka)
+            holder.slika.setImageBitmap(bitmap)
+        }
     }
 }

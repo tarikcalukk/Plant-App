@@ -176,7 +176,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
                     odabranaJela,
                     odabraniProfilOkusa,
                     odabraniKlimatskiTipovi,
-                    odabraniZemljisniTipovi
+                    odabraniZemljisniTipovi,
                 )
                 BiljkaSingleton.listaBiljaka.add(novaBiljka)
 

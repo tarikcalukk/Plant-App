@@ -1,8 +1,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="388dp"
-    android:layout_height="213dp"
-    android:layout_marginEnd="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
     app:cardBackgroundColor="#fff2cc"
     app:cardCornerRadius="4dp">
 
@@ -12,7 +12,7 @@
 
         <ImageView
             android:id="@+id/slikaItem"
-            android:layout_width="0dp"
+            android:layout_width="70dp"
             android:layout_height="0dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
@@ -26,7 +26,7 @@
         <TextView
             android:id="@+id/nazivItem"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
@@ -35,14 +35,13 @@
             android:textColor="#263238"
             app:layout_constraintBottom_toTopOf="@+id/profilOkusaItem"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/slikaItem"
-            app:layout_constraintTop_toTopOf="@+id/slikaItem" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/profilOkusaItem"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
@@ -57,7 +56,7 @@
         <TextView
             android:id="@+id/jelo1Item"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
@@ -65,7 +64,7 @@
             android:background="@color/lred"
             android:fontFamily="sans-serif-smallcaps"
             android:textColor="#263238"
-            app:layout_constraintBottom_toBottomOf="@id/slikaItem"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/jelo2Item"
             app:layout_constraintStart_toEndOf="@id/slikaItem"
             app:layout_constraintTop_toBottomOf="@id/profilOkusaItem" />
@@ -73,14 +72,14 @@
         <TextView
             android:id="@+id/jelo2Item"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="6dp"
             android:background="@color/lred"
             android:fontFamily="sans-serif-smallcaps"
             android:textColor="#263238"
-            app:layout_constraintBottom_toBottomOf="@id/slikaItem"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/jelo3Item"
             app:layout_constraintStart_toEndOf="@id/jelo1Item"
             app:layout_constraintTop_toBottomOf="@id/profilOkusaItem" />
@@ -88,14 +87,14 @@
         <TextView
             android:id="@+id/jelo3Item"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="6dp"
             android:background="@color/lred"
             android:fontFamily="sans-serif-smallcaps"
             android:textColor="#263238"
-            app:layout_constraintBottom_toBottomOf="@id/slikaItem"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/jelo2Item"
             app:layout_constraintTop_toBottomOf="@id/profilOkusaItem" />

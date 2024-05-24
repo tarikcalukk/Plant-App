@@ -1,8 +1,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
-    android:layout_marginEnd="8dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
     app:cardBackgroundColor="#d9ead3"
     app:cardCornerRadius="4dp">
 
@@ -12,7 +12,7 @@
 
         <ImageView
             android:id="@+id/slikaItem"
-            android:layout_width="0dp"
+            android:layout_width="70dp"
             android:layout_height="0dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
@@ -36,7 +36,7 @@
             app:layout_constraintBottom_toTopOf="@+id/porodicaItem"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/slikaItem"
-            app:layout_constraintTop_toTopOf="@+id/slikaItem" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/porodicaItem"
@@ -78,7 +78,7 @@
             android:background="@color/pink"
             android:fontFamily="sans-serif-smallcaps"
             android:textColor="#3E2723"
-            app:layout_constraintBottom_toBottomOf="@id/slikaItem"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/slikaItem"
             app:layout_constraintTop_toBottomOf="@+id/klimatskiTipItem" />

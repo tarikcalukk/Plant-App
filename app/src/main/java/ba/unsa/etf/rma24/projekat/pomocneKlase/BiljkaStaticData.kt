@@ -11,8 +11,7 @@ val biljke = listOf(
         profilOkusa = ProfilOkusaBiljke.BEZUKUSNO,
         jela = listOf("Salata od paradajza", "Punjene tikvice"),
         klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUBTROPSKA),
-        zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.ILOVACA)
-    ),
+        zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.ILOVACA)),
     Biljka(
         naziv = "Nana (Mentha spicata)",
         porodica = "Lamiaceae (metvice)",

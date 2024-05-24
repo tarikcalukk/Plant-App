@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma24.projekat.adapteri
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ba.unsa.etf.rma24.projekat.Biljka
 import ba.unsa.etf.rma24.projekat.R
+import ba.unsa.etf.rma24.projekat.TrefleDAO
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class KuharskiAdapter(
     var biljke: List<Biljka>,
@@ -77,7 +82,7 @@ class KuharskiAdapter(
             filterCallback(referenceBiljka)
         }
         holder.nazivItem.text = currentBiljka.naziv
-        holder.profilOkusaItem.text = currentBiljka.profilOkusa.opis
+        holder.profilOkusaItem.text = currentBiljka.profilOkusa?.opis
         holder.jelo1Item.text = ""
         holder.jelo2Item.text = ""
         holder.jelo3Item.text = ""
@@ -90,10 +95,11 @@ class KuharskiAdapter(
                 2 -> holder.jelo3Item.text = jelo
             }
         }
+        val trefleDAO = TrefleDAO()
 
-        val resourceId = holder.itemView.context.resources.getIdentifier(
-            "eucaliptus", "drawable", holder.itemView.context.packageName
-        )
-        holder.slika.setImageResource(resourceId)
+        CoroutineScope(Dispatchers.Main).launch {
+            val bitmap = trefleDAO.getImage(currentBiljka)
+            holder.slika.setImageBitmap(bitmap)
+        }
     }
 }
