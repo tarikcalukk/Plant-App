@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performQuickSearch(color: String, query: String) {
-        lifecycleScope.launch {
+        /*lifecycleScope.launch {
             val searchResults = TrefleDAO().getPlantsWithFlowerColor(color, query)
 
             if (searchResults.isNotEmpty()) {
@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this@MainActivity, "No results found", Toast.LENGTH_SHORT).show()
             }
-        }
+        }*/
     }
 
     override fun onResume() {

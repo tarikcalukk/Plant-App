@@ -81,8 +81,16 @@ class BotanickiAdapter(
         }
         holder.nazivItem.text = currentBiljka.naziv
         holder.porodicaItem.text = currentBiljka.porodica
-        holder.klimatskiTipItem.text = currentBiljka.klimatskiTipovi[0].opis
-        holder.zemljisniTipItem.text = currentBiljka.zemljisniTipovi[0].naziv
+        if (currentBiljka.klimatskiTipovi.isNotEmpty()) {
+            holder.klimatskiTipItem.text = currentBiljka.klimatskiTipovi[0].opis
+        } else {
+            holder.klimatskiTipItem.text = ""
+        }
+        if(currentBiljka.zemljisniTipovi.isNotEmpty()) {
+            holder.zemljisniTipItem.text = currentBiljka.zemljisniTipovi[0].naziv
+        } else {
+            holder.zemljisniTipItem.text = ""
+        }
 
         val trefleDAO = TrefleDAO()
 

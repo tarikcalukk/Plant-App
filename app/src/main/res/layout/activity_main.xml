@@ -97,6 +97,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
+        android:background="#E8B829"
+        android:hint="Unesite naziv"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@id/biljkeRV"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -105,15 +107,17 @@
 
     <Spinner
         android:id="@+id/bojaSPIN"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/biljkeRV"
         app:layout_constraintLeft_toRightOf="@id/pretragaET"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/resetBtn" />
+        app:layout_constraintTop_toBottomOf="@id/resetBtn"
+        tools:background="#FFEB3B" />
 
     <Button
         android:id="@+id/brzaPretraga"

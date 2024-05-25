@@ -17,6 +17,10 @@ import ba.unsa.etf.rma24.projekat.pomocneKlase.KlimatskiTip
 import ba.unsa.etf.rma24.projekat.pomocneKlase.MedicinskaKorist
 import ba.unsa.etf.rma24.projekat.pomocneKlase.ProfilOkusaBiljke
 import ba.unsa.etf.rma24.projekat.pomocneKlase.Zemljiste
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class NovaBiljkaActivity : AppCompatActivity() {
@@ -178,7 +182,12 @@ class NovaBiljkaActivity : AppCompatActivity() {
                     odabraniKlimatskiTipovi,
                     odabraniZemljisniTipovi,
                 )
-                BiljkaSingleton.listaBiljaka.add(novaBiljka)
+                val trefleDAO = TrefleDAO()
+                var ispravljenaBiljka = Biljka("rose", "kako", "aop", emptyList(), emptyList(), null, emptyList(), emptyList())
+                CoroutineScope(Dispatchers.Main).launch {
+                    ispravljenaBiljka = trefleDAO.fixData(novaBiljka)
+                }
+                BiljkaSingleton.listaBiljaka.add(ispravljenaBiljka)
 
                 val intent = Intent(this, MainActivity::class.java)
                 setResult(Activity.RESULT_OK, intent)

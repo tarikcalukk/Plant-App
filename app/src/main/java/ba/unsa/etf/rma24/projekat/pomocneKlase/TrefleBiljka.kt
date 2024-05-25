@@ -8,5 +8,7 @@ data class TrefleBiljka(
     @SerializedName("scientific_name") val scientificName: String,
     @SerializedName("image_url") val slika: String?,
     @SerializedName("flower_color") val flowerColor: String?,
-    @SerializedName("family_name") val family: String
+    @SerializedName("family_name") val family: String,
+    @SerializedName("edible") val edible: Boolean,
+    @SerializedName("main_species") val mainSpecies: MainSpecies?
 )
