@@ -8,17 +8,20 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ba.unsa.etf.rma24.projekat.Trefle.TrefleDAO
 import ba.unsa.etf.rma24.projekat.adapteri.BotanickiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.KuharskiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.MedicinskiAdapter
 import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
+import ba.unsa.etf.rma24.projekat.pomocneKlase.CustomColorAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var spinner: Spinner
@@ -57,8 +60,7 @@ class MainActivity : AppCompatActivity() {
         spinner.setAdapter(adapter)
 
         val colorArraySpinner = listOf("red", "blue", "yellow", "orange", "purple", "brown", "green")
-        val colorAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, colorArraySpinner)
-        colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val colorAdapter = CustomColorAdapter(this, colorArraySpinner)
         bojaSPIN.adapter = colorAdapter
 
         medicinskiAdapter = MedicinskiAdapter(listOf()) { biljka -> medicinskiAdapter.filter(biljka) }
@@ -158,16 +160,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performQuickSearch(color: String, query: String) {
-        /*lifecycleScope.launch {
-            val searchResults = TrefleDAO().getPlantsWithFlowerColor(color, query)
-
-            if (searchResults.isNotEmpty()) {
-                botanickiAdapter.updateBiljke(searchResults)
-                botanickiAdapter.notifyDataSetChanged()
-            } else {
-                Toast.makeText(this@MainActivity, "No results found", Toast.LENGTH_SHORT).show()
+        CoroutineScope(Dispatchers.Main).launch {
+            val biljke = withContext(Dispatchers.IO) {
+                val trefleDAO = TrefleDAO()
+                trefleDAO.getPlantsWithFlowerColor(color, query)
             }
-        }*/
+            botanickiAdapter.updateBiljke(biljke)
+            botanickiAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onResume() {

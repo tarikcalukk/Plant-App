@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma24.projekat.pomocneKlase
+package ba.unsa.etf.rma24.projekat.Trefle
 
 import com.google.gson.annotations.SerializedName
 

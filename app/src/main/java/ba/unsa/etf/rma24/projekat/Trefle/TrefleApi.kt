@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma24.projekat.pomocneKlase
+package ba.unsa.etf.rma24.projekat.Trefle
 
 import ba.unsa.etf.rma24.projekat.BuildConfig
 import retrofit2.Response

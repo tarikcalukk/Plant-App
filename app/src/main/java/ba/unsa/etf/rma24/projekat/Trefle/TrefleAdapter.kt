@@ -1,6 +1,5 @@
-package ba.unsa.etf.rma24.projekat.adapteri
+package ba.unsa.etf.rma24.projekat.Trefle
 
-import ba.unsa.etf.rma24.projekat.pomocneKlase.TrefleApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

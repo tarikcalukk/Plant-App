@@ -12,15 +12,14 @@ import android.widget.ImageView
 import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import ba.unsa.etf.rma24.projekat.Trefle.TrefleDAO
 import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
 import ba.unsa.etf.rma24.projekat.pomocneKlase.KlimatskiTip
 import ba.unsa.etf.rma24.projekat.pomocneKlase.MedicinskaKorist
 import ba.unsa.etf.rma24.projekat.pomocneKlase.ProfilOkusaBiljke
 import ba.unsa.etf.rma24.projekat.pomocneKlase.Zemljiste
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 class NovaBiljkaActivity : AppCompatActivity() {
@@ -92,49 +91,49 @@ class NovaBiljkaActivity : AppCompatActivity() {
         }
 
         dodajJeloBtn.setOnClickListener {
-            var prethodnaVrednostJela: String = ""
+            var prethodnaVrednostJela = ""
             val novoJelo = jeloET.text.toString().trim().lowercase()
-            if (novoJelo.length in 2..20) {
-                val indexPostojecegJela = dodajJeloBtn.tag as? Int
-                if (indexPostojecegJela != null) {
-                    val postojeceJelo = adapter.getItem(indexPostojecegJela)
-                    if (postojeceJelo?.lowercase() == novoJelo) {
-                        adapter.remove(postojeceJelo)
-                        adapter.insert(novoJelo, indexPostojecegJela)
-                    } else {
-                        if (!adapterItemsContain(adapter, novoJelo)) {
+            when (novoJelo.length) {
+                in 2..20 -> {
+                    val indexPostojecegJela = dodajJeloBtn.tag as? Int
+                    if (indexPostojecegJela != null) {
+                        val postojeceJelo = adapter.getItem(indexPostojecegJela)
+                        if (postojeceJelo?.lowercase() == novoJelo) {
                             adapter.remove(postojeceJelo)
                             adapter.insert(novoJelo, indexPostojecegJela)
+                        } else {
+                            if (!adapterItemsContain(adapter, novoJelo)) {
+                                adapter.remove(postojeceJelo)
+                                adapter.insert(novoJelo, indexPostojecegJela)
+                            } else {
+                                dodajJeloBtn.error = "Jelo već postoji u listi"
+                            }
+                        }
+                    } else {
+                        if (!adapterItemsContain(adapter, novoJelo)) {
+                            adapter.add(novoJelo)
                         } else {
                             dodajJeloBtn.error = "Jelo već postoji u listi"
                         }
                     }
-                } else {
-                    if (!adapterItemsContain(adapter, novoJelo)) {
-                        adapter.add(novoJelo)
-                    } else {
-                        dodajJeloBtn.error = "Jelo već postoji u listi"
+                    jeloET.text.clear()
+                    dodajJeloBtn.text = "Dodaj jelo"
+                    dodajJeloBtn.tag = null
+                }
+                1 -> {
+                    /* Ako se pokuša promijeniti naziv jela a da ima samo 1 znak,
+                         ostavlja se stara vrijednost koja je bila! */
+                    jeloET.setText(prethodnaVrednostJela)
+                }
+                else -> {
+                    val indexPostojecegJela = dodajJeloBtn.tag as? Int
+                    if (indexPostojecegJela != null) {
+                        adapter.remove(adapter.getItem(indexPostojecegJela))
                     }
+                    jeloET.text.clear()
+                    dodajJeloBtn.text = "Dodaj jelo"
+                    dodajJeloBtn.tag = null
                 }
-                jeloET.text.clear()
-                dodajJeloBtn.text = "Dodaj jelo"
-                dodajJeloBtn.tag = null
-                prethodnaVrednostJela = novoJelo
-
-            }
-            else if (novoJelo.length == 1) {
-                /* Ako se pokuša promijeniti naziv jela a da ima samo 1 znak,
-                 ostavlja se stara vrijednost koja je bila! */
-                jeloET.setText(prethodnaVrednostJela)
-            }
-            else {
-                val indexPostojecegJela = dodajJeloBtn.tag as? Int
-                if (indexPostojecegJela != null) {
-                    adapter.remove(adapter.getItem(indexPostojecegJela))
-                }
-                jeloET.text.clear()
-                dodajJeloBtn.text = "Dodaj jelo"
-                dodajJeloBtn.tag = null
             }
         }
 
@@ -182,16 +181,16 @@ class NovaBiljkaActivity : AppCompatActivity() {
                     odabraniKlimatskiTipovi,
                     odabraniZemljisniTipovi,
                 )
-                val trefleDAO = TrefleDAO()
-                var ispravljenaBiljka = Biljka("rose", "kako", "aop", emptyList(), emptyList(), null, emptyList(), emptyList())
-                CoroutineScope(Dispatchers.Main).launch {
+                GlobalScope.launch {
+                    val trefleDAO = TrefleDAO()
+                    var ispravljenaBiljka = Biljka("Rose", "Rosaceae", "Otrovno", emptyList(), emptyList(), null, emptyList(), emptyList())
                     ispravljenaBiljka = trefleDAO.fixData(novaBiljka)
-                }
-                BiljkaSingleton.listaBiljaka.add(ispravljenaBiljka)
+                    BiljkaSingleton.listaBiljaka.add(ispravljenaBiljka)
 
-                val intent = Intent(this, MainActivity::class.java)
-                setResult(Activity.RESULT_OK, intent)
-                finish()
+                    val intent = Intent(this@NovaBiljkaActivity, MainActivity::class.java)
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                }
             }
         }
 

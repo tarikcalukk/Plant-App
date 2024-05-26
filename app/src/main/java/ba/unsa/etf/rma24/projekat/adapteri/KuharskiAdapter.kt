@@ -1,6 +1,5 @@
 package ba.unsa.etf.rma24.projekat.adapteri
 
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ba.unsa.etf.rma24.projekat.Biljka
 import ba.unsa.etf.rma24.projekat.R
-import ba.unsa.etf.rma24.projekat.TrefleDAO
+import ba.unsa.etf.rma24.projekat.Trefle.TrefleDAO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
