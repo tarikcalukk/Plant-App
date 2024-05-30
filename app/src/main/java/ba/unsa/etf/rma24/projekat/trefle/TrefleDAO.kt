@@ -13,8 +13,6 @@ import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URL
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 class TrefleDAO (private val context : Context) {
     private val defaultBitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.eucaliptus)
@@ -125,7 +123,7 @@ class TrefleDAO (private val context : Context) {
                 apiKey = BuildConfig.TREFLE_API_KEY
             )
             val plantDetails = plantDetailsResponse.body()?.data
-            val name = plantDetails?.commonName ?: ""
+            val name = plantDetails?.scientificName ?: ""
 
             if (name.contains(substr, ignoreCase = true)) {
                 val zemljisniTip= Zemljiste.entries.filter { soilType ->

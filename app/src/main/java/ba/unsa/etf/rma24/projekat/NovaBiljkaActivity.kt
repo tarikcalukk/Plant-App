@@ -171,6 +171,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
                         odabraneMedicinskeKoristi.add(MedicinskaKorist.valueOf(medicinskaKoristLV.getItemAtPosition(i).toString()))
                     }
                 }
+
                 val novaBiljka = Biljka(
                     naziv,
                     porodica,
@@ -181,6 +182,8 @@ class NovaBiljkaActivity : AppCompatActivity() {
                     odabraniKlimatskiTipovi,
                     odabraniZemljisniTipovi,
                 )
+
+
                 GlobalScope.launch {
                     val trefleDAO = TrefleDAO(this@NovaBiljkaActivity)
                     var ispravljenaBiljka = Biljka("Rose", "Rosaceae", "Otrovno", emptyList(), emptyList(), null, emptyList(), emptyList())
@@ -237,8 +240,13 @@ class NovaBiljkaActivity : AppCompatActivity() {
             odabranaJela.add(adapter.getItem(i)!!)
         }
 
-        if (naziv.length !in 2..20) {
-            nazivET.error = "Naziv mora biti između 2 i 20 znakova"
+        if (naziv.length !in 2..40) {
+            nazivET.error = "Naziv mora biti između 2 i 40 znakova"
+            validacija = false
+        }
+        val formatPattern = "^[^\\(]+\\([^\\)]+\\)$".toRegex()
+        if (!formatPattern.containsMatchIn(naziv)) {
+            nazivET.error = "Naziv mora biti u formatu Naziv(latinski naziv)"
             validacija = false
         }
         if (porodica.length !in 2..20) {
