@@ -1,6 +1,5 @@
-package ba.unsa.etf.rma24.projekat.Trefle
+package ba.unsa.etf.rma24.projekat.trefle
 
-import ba.unsa.etf.rma24.projekat.Trefle.TrefleBiljka
 import com.google.gson.annotations.SerializedName
 
 data class PlantResponse(

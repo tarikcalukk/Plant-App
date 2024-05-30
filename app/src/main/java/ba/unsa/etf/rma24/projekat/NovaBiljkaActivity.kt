@@ -12,7 +12,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import ba.unsa.etf.rma24.projekat.Trefle.TrefleDAO
+import ba.unsa.etf.rma24.projekat.trefle.TrefleDAO
 import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
 import ba.unsa.etf.rma24.projekat.pomocneKlase.KlimatskiTip
 import ba.unsa.etf.rma24.projekat.pomocneKlase.MedicinskaKorist
@@ -182,7 +182,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
                     odabraniZemljisniTipovi,
                 )
                 GlobalScope.launch {
-                    val trefleDAO = TrefleDAO()
+                    val trefleDAO = TrefleDAO(this@NovaBiljkaActivity)
                     var ispravljenaBiljka = Biljka("Rose", "Rosaceae", "Otrovno", emptyList(), emptyList(), null, emptyList(), emptyList())
                     ispravljenaBiljka = trefleDAO.fixData(novaBiljka)
                     BiljkaSingleton.listaBiljaka.add(ispravljenaBiljka)

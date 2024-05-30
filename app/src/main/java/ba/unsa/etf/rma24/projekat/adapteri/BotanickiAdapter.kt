@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ba.unsa.etf.rma24.projekat.Biljka
 import ba.unsa.etf.rma24.projekat.R
-import ba.unsa.etf.rma24.projekat.Trefle.TrefleDAO
+import ba.unsa.etf.rma24.projekat.trefle.TrefleDAO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -91,11 +91,11 @@ class BotanickiAdapter(
             holder.zemljisniTipItem.text = ""
         }
 
-        val trefleDAO = TrefleDAO()
+        val context = holder.itemView.context
+        val trefleDAO = TrefleDAO(context)
 
         CoroutineScope(Dispatchers.Main).launch {
-            val bitmap = trefleDAO.getImage(currentBiljka)
-            holder.slika.setImageBitmap(bitmap)
+            trefleDAO.loadImageIntoImageView(holder.slika, currentBiljka)
         }
     }
 }

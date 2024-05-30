@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma24.projekat.Trefle
+package ba.unsa.etf.rma24.projekat.trefle
 
 import ba.unsa.etf.rma24.projekat.BuildConfig
 import retrofit2.Response
@@ -17,4 +17,10 @@ interface TrefleApi {
         @Path("id") id: Int,
         @Query("token") apiKey: String
     ): Response<PlantDetailsResponse>
+    @GET("plants")
+    suspend fun getPlants(
+        @Query("token") apiKey: String = BuildConfig.TREFLE_API_KEY,
+        @Query("filter[flower_color]") flowerColor: String,
+        @Query("q") query: String = ""
+    ) : Response<PlantResponse>
 }

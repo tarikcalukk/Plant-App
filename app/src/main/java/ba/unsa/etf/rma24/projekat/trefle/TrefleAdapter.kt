@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma24.projekat.Trefle
+package ba.unsa.etf.rma24.projekat.trefle
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

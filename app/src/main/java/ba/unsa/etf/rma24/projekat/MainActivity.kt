@@ -12,7 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ba.unsa.etf.rma24.projekat.Trefle.TrefleDAO
+import ba.unsa.etf.rma24.projekat.trefle.TrefleDAO
 import ba.unsa.etf.rma24.projekat.adapteri.BotanickiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.KuharskiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.MedicinskiAdapter
@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity() {
     private var trenutniMod: String = "Medicinski"
     private var filtriraneBiljke = BiljkaSingleton.filtriraneBiljke
     private var listaBiljaka = BiljkaSingleton.listaBiljaka
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -142,7 +141,12 @@ class MainActivity : AppCompatActivity() {
             if (pretragaET.text.isNotEmpty() && bojaSPIN.selectedItem != null) {
                 val query = pretragaET.text.toString()
                 val color = bojaSPIN.selectedItem.toString()
-                performQuickSearch(color, query)
+                pretraga(color, query)
+                /*  IZMIJENA MODA= PRIKAZ STARE LISTE
+
+                botanickiAdapter.updateBiljke(listaBiljaka)
+                botanickiAdapter.notifyDataSetChanged()
+                */
             }
         }
     }
@@ -159,12 +163,13 @@ class MainActivity : AppCompatActivity() {
         brzaPretragaBtn.visibility = View.GONE
     }
 
-    private fun performQuickSearch(color: String, query: String) {
+    private fun pretraga(color: String, query: String) {
         CoroutineScope(Dispatchers.Main).launch {
             val biljke = withContext(Dispatchers.IO) {
-                val trefleDAO = TrefleDAO()
+                val trefleDAO = TrefleDAO(this@MainActivity)
                 trefleDAO.getPlantsWithFlowerColor(color, query)
             }
+            biljka.adapter = BotanickiAdapter(biljke) { biljka -> botanickiAdapter.filter(biljka) }
             botanickiAdapter.updateBiljke(biljke)
             botanickiAdapter.notifyDataSetChanged()
         }
