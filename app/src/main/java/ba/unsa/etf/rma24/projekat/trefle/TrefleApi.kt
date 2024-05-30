@@ -21,6 +21,5 @@ interface TrefleApi {
     suspend fun getPlants(
         @Query("token") apiKey: String = BuildConfig.TREFLE_API_KEY,
         @Query("filter[flower_color]") flowerColor: String,
-        @Query("q") query: String = ""
-    ) : Response<PlantResponse>
+        ) : Response<PlantResponse>
 }

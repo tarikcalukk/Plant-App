@@ -66,18 +66,18 @@ class TrefleDAO (private val context : Context) {
             if (detailsResponse.isSuccessful) {
                 val plantDetails = detailsResponse.body()?.data
                 plantDetails?.let { details ->
-                    if (details.family != null && plant.porodica != details.family) {
-                        plant.porodica = details.family
+                    if (details.mainSpecies.family != null && plant.porodica != details.mainSpecies.family) {
+                        plant.porodica = details.mainSpecies.family
                     }
 
-                    if (!details.edible) {
+                    if (!details.mainSpecies.edible) {
                         plant.jela = emptyList()
                         if (!plant.medicinskoUpozorenje.contains("NIJE JESTIVO")) {
                             plant.medicinskoUpozorenje += " NIJE JESTIVO"
                         }
                     }
 
-                    details.mainSpecies?.specifications?.toxicity?.let { toxicity ->
+                    details.mainSpecies.specifications?.toxicity?.let { toxicity ->
                         if (toxicity != "none" && !plant.medicinskoUpozorenje.contains("TOKSIČNO")) {
                             plant.medicinskoUpozorenje += " TOKSIČNO"
                         }
@@ -86,12 +86,12 @@ class TrefleDAO (private val context : Context) {
                         validSoilTypes[soilType.naziv]?.let { range ->
                             when (range) {
                                 is Int -> {
-                                    details.mainSpecies?.growth?.soilTexture?.any { texture ->
+                                    details.mainSpecies.growth?.soilTexture?.any { texture ->
                                         range == texture.toInt()
                                     } ?: false
                                 }
                                 is IntRange -> {
-                                    details.mainSpecies?.growth?.soilTexture?.any { texture ->
+                                    details.mainSpecies.growth?.soilTexture?.any { texture ->
                                         range.contains(texture.toInt())
                                     } ?: false
                                 }
@@ -101,7 +101,7 @@ class TrefleDAO (private val context : Context) {
                     }
                     plant.klimatskiTipovi = plant.klimatskiTipovi.filter { climateType ->
                         validClimateTypes[climateType.opis]?.let { (lightRange, humidityRange) ->
-                            details.mainSpecies?.growth?.let { growth ->
+                            details.mainSpecies.growth?.let { growth ->
                                 lightRange.contains(growth.light ?: 0) && humidityRange.contains(growth.atmosphericHumidity ?: 0)
                             } ?: false
                         } ?: false
@@ -114,7 +114,7 @@ class TrefleDAO (private val context : Context) {
 
     suspend fun getPlantsWithFlowerColor(flowerColor: String, substr: String): List<Biljka> {
         val resultList = mutableListOf<Biljka>()
-        val response = TrefleAdapter.retrofit.getPlants(flowerColor = flowerColor, query = substr)
+        val response = TrefleAdapter.retrofit.getPlants(flowerColor = flowerColor)
         val plants = response.body()?.plants ?: emptyList()
 
         for (plant in plants) {
@@ -154,7 +154,7 @@ class TrefleDAO (private val context : Context) {
 
                 val biljka = Biljka(
                     naziv = name,
-                    porodica = plantDetails?.family,
+                    porodica = plantDetails?.mainSpecies?.family,
                     medicinskoUpozorenje = "",
                     medicinskeKoristi = emptyList(),
                     jela = emptyList(),

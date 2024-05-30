@@ -1,5 +1,7 @@
 package ba.unsa.etf.rma24.projekat.trefle
 
+import com.google.gson.annotations.SerializedName
+
 data class PlantDetailsResponse(
-    val data: TrefleBiljka
+    @SerializedName("data") val data: IdResponse
 )

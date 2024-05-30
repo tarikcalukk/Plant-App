@@ -25,7 +25,7 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var spinner: Spinner
-    private lateinit var button: Button
+    private lateinit var resetBtn: Button
     private lateinit var biljka: RecyclerView
     private lateinit var novaBiljkaBtn : Button
     private lateinit var pretragaET: EditText
@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var trenutniMod: String = "Medicinski"
     private var filtriraneBiljke = BiljkaSingleton.filtriraneBiljke
     private var listaBiljaka = BiljkaSingleton.listaBiljaka
+    private var staraLista: MutableList<Biljka>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         biljka = findViewById(R.id.biljkeRV)
         spinner = findViewById(R.id.modSpinner)
-        button = findViewById(R.id.resetBtn)
+        resetBtn = findViewById(R.id.resetBtn)
         novaBiljkaBtn = findViewById(R.id.novaBiljkaBtn)
         pretragaET = findViewById(R.id.pretragaET)
         bojaSPIN = findViewById(R.id.bojaSPIN)
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         biljka.adapter = medicinskiAdapter
         medicinskiAdapter.updateBiljke(listaBiljaka)
 
-        button.setOnClickListener {
+        resetBtn.setOnClickListener {
             filtriraneBiljke = BiljkaSingleton.listaBiljaka
             when (trenutniMod) {
                 "Medicinski" -> {
@@ -102,6 +103,11 @@ class MainActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
+                if (staraLista != null) {
+                    listaBiljaka = staraLista!!
+                    staraLista = null
+                    resetBtn.performClick()
+                }
                 if (spinner.selectedItem.toString() == "Medicinski") {
                     if (trenutniMod == "Botanicki") filtriraneBiljke = botanickiAdapter.biljke
                     if (trenutniMod == "Kuharski") filtriraneBiljke = kuharskiAdapter.biljke
@@ -138,15 +144,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         brzaPretragaBtn.setOnClickListener {
+            val query = pretragaET.text.toString()
+            val color = bojaSPIN.selectedItem.toString()
             if (pretragaET.text.isNotEmpty() && bojaSPIN.selectedItem != null) {
-                val query = pretragaET.text.toString()
-                val color = bojaSPIN.selectedItem.toString()
                 pretraga(color, query)
-                /*  IZMIJENA MODA= PRIKAZ STARE LISTE
-
-                botanickiAdapter.updateBiljke(listaBiljaka)
-                botanickiAdapter.notifyDataSetChanged()
-                */
             }
         }
     }
@@ -164,6 +165,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun pretraga(color: String, query: String) {
+        if (staraLista == null) {
+            staraLista = listaBiljaka
+        }
         CoroutineScope(Dispatchers.Main).launch {
             val biljke = withContext(Dispatchers.IO) {
                 val trefleDAO = TrefleDAO(this@MainActivity)
