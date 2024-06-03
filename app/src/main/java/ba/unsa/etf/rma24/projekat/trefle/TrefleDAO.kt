@@ -14,9 +14,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URL
 
-class TrefleDAO (private val context : Context) {
-    private val defaultBitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.eucaliptus)
-    private val validSoilTypes = mapOf(
+class TrefleDAO (private val context : Context?) {
+    constructor() : this(null)
+
+    private val defaultBitmap: Bitmap by lazy { loadDefaultBitmap() }
+    private fun loadDefaultBitmap(): Bitmap {
+        return context?.let {
+            BitmapFactory.decodeResource(it.resources, R.drawable.eucaliptus)
+        } ?: throw IllegalStateException("Context must not be null to load default bitmap")
+    }
+    private val zemljisniTip = mapOf(
         "SLJUNOVITO" to 9,
         "KKRECNJACKO" to 10,
         "GLINENO" to 1..2,
@@ -24,7 +31,7 @@ class TrefleDAO (private val context : Context) {
         "ILOVACA" to 5..6,
         "CRNICA" to 7..8
     )
-    private val validClimateTypes = mapOf(
+    private val klimatskiTip = mapOf(
         "SREDOZEMNA" to (6..9 to 1..5),
         "TROPSKA" to (8..10 to 7..10),
         "SUBTROPSKA" to (6..9 to 5..8),
@@ -82,29 +89,24 @@ class TrefleDAO (private val context : Context) {
                             plant.medicinskoUpozorenje += " TOKSIČNO"
                         }
                     }
-                    plant.zemljisniTipovi = plant.zemljisniTipovi.filter { soilType ->
-                        validSoilTypes[soilType.naziv]?.let { range ->
+                    if (details.mainSpecies.growth?.soilTexture != null) {
+                        val soilTextures = details.mainSpecies.growth.soilTexture.map { it.toInt() }
+                        plant.zemljisniTipovi = zemljisniTip.entries.filter { (_, range) ->
                             when (range) {
-                                is Int -> {
-                                    details.mainSpecies.growth?.soilTexture?.any { texture ->
-                                        range == texture.toInt()
-                                    } ?: false
-                                }
-                                is IntRange -> {
-                                    details.mainSpecies.growth?.soilTexture?.any { texture ->
-                                        range.contains(texture.toInt())
-                                    } ?: false
-                                }
+                                is Int -> soilTextures.contains(range)
+                                is IntRange -> soilTextures.any { range.contains(it) }
                                 else -> false
                             }
-                        } ?: false
+                        }.map { (key, _) -> Zemljiste.valueOf(key) }
                     }
-                    plant.klimatskiTipovi = plant.klimatskiTipovi.filter { climateType ->
-                        validClimateTypes[climateType.opis]?.let { (lightRange, humidityRange) ->
-                            details.mainSpecies.growth?.let { growth ->
-                                lightRange.contains(growth.light ?: 0) && humidityRange.contains(growth.atmosphericHumidity ?: 0)
-                            } ?: false
-                        } ?: false
+
+                    if (details.mainSpecies.growth?.light != null && details.mainSpecies.growth.atmosphericHumidity != null) {
+                        val light = details.mainSpecies.growth.light.toInt()
+                        val humidity = details.mainSpecies.growth.atmosphericHumidity.toInt()
+                        plant.klimatskiTipovi = klimatskiTip.entries.filter { (_, ranges) ->
+                            val (lightRange, humidityRange) = ranges
+                            light in lightRange && humidity in humidityRange
+                        }.map { (key, _) -> KlimatskiTip.valueOf(key) }
                     }
                 }
             }
@@ -114,68 +116,62 @@ class TrefleDAO (private val context : Context) {
 
     suspend fun getPlantsWithFlowerColor(flowerColor: String, substr: String): List<Biljka> {
         val resultList = mutableListOf<Biljka>()
-        val response = TrefleAdapter.retrofit.getPlants(flowerColor = flowerColor)
-        val plants = response.body()?.plants ?: emptyList()
+        var currentPage = 1
+        val pageSize = 20
 
-        for (plant in plants) {
-            val plantDetailsResponse = TrefleAdapter.retrofit.getPlantDetails(
-                id = plant.id,
-                apiKey = BuildConfig.TREFLE_API_KEY
+        while (true) {
+            val response = TrefleAdapter.retrofit.getPlants(
+                apiKey = BuildConfig.TREFLE_API_KEY,
+                flowerColor = flowerColor,
+                page = currentPage,
+                pageSize = pageSize
             )
-            val plantDetails = plantDetailsResponse.body()?.data
-            val name = plantDetails?.scientificName ?: ""
 
-            if (name.contains(substr, ignoreCase = true)) {
-                val zemljisniTip= Zemljiste.entries.filter { soilType ->
-                    validSoilTypes[soilType.name]?.let { range ->
-                        when (range) {
-                            is Int -> {
-                                plantDetails?.mainSpecies?.growth?.soilTexture?.any { texture ->
-                                    range == texture.toInt()
-                                } ?: false
-                            }
-                            is IntRange -> {
-                                plantDetails?.mainSpecies?.growth?.soilTexture?.any { texture ->
-                                    range.contains(texture.toInt())
-                                } ?: false
-                            }
-                            else -> false
-                        }
-                    } ?: false
-                }
-
-                val klimatskiTip = KlimatskiTip.entries.filter { climateType ->
-                    validClimateTypes[climateType.name]?.let { (lightRange, humidityRange) ->
-                        plantDetails?.mainSpecies?.growth?.let { growth ->
-                            lightRange.contains(growth.light ?: 0) && humidityRange.contains(growth.atmosphericHumidity ?: 0)
-                        } ?: false
-                    } ?: false
-                }
-
-                val biljka = Biljka(
-                    naziv = name,
-                    porodica = plantDetails?.mainSpecies?.family,
-                    medicinskoUpozorenje = "",
-                    medicinskeKoristi = emptyList(),
-                    jela = emptyList(),
-                    profilOkusa = null,
-                    klimatskiTipovi = klimatskiTip,
-                    zemljisniTipovi = zemljisniTip
-                )
-                resultList.add(biljka)
+            val plants = response.body()?.plants ?: emptyList()
+            if (plants.isEmpty()) {
+                break
             }
+
+            for (plant in plants) {
+                val plantDetailsResponse = TrefleAdapter.retrofit.getPlantDetails(
+                    id = plant.id,
+                    apiKey = BuildConfig.TREFLE_API_KEY
+                )
+                val plantDetails = plantDetailsResponse.body()?.data
+                val name = plantDetails?.scientificName ?: ""
+
+                if (name.contains(substr, ignoreCase = true)) {
+                    val biljka = Biljka(
+                        naziv = name,
+                        porodica = plantDetails?.mainSpecies?.family ?: "",
+                        medicinskoUpozorenje = "",
+                        medicinskeKoristi = emptyList(),
+                        profilOkusa = null,
+                        jela = emptyList(),
+                        klimatskiTipovi = emptyList(),
+                        zemljisniTipovi = emptyList()
+                  )
+
+                    val fixedBiljka = fixData(biljka)
+                    resultList.add(fixedBiljka)
+                }
+            }
+            currentPage++
         }
         return resultList
     }
 
 
+
     suspend fun loadImageIntoImageView(imageView: ImageView, biljka: Biljka) {
         val bitmap = getImage(biljka)
-        Glide.with(context)
-            .load(bitmap)
-            .placeholder(R.drawable.eucaliptus)
-            .error(R.drawable.eucaliptus)
-            .fallback(R.drawable.eucaliptus)
-            .into(imageView)
+        if (context != null) {
+            Glide.with(context)
+                .load(bitmap)
+                .placeholder(R.drawable.eucaliptus)
+                .error(R.drawable.eucaliptus)
+                .fallback(R.drawable.eucaliptus)
+                .into(imageView)
+        }
     }
 }
