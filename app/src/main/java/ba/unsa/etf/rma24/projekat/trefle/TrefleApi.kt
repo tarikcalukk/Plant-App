@@ -17,12 +17,10 @@ interface TrefleApi {
         @Path("id") id: Int,
         @Query("token") apiKey: String
     ): Response<PlantDetailsResponse>
-    @GET("plants")
+    @GET("plants/search")
     suspend fun getPlants(
         @Query("token") apiKey: String = BuildConfig.TREFLE_API_KEY,
         @Query("filter[flower_color]") flowerColor: String,
-        @Query("page") page: Int,
-        @Query("page_size") pageSize: Int
+        @Query("q") query: String
     ): Response<PlantResponse>
-
 }

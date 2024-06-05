@@ -24,8 +24,8 @@ class TrefleDAO (private val context : Context?) {
         } ?: throw IllegalStateException("Context must not be null to load default bitmap")
     }
     private val zemljisniTip = mapOf(
-        "SLJUNOVITO" to 9,
-        "KKRECNJACKO" to 10,
+        "SLJUNKOVITO" to 9,
+        "KRECNJACKO" to 10,
         "GLINENO" to 1..2,
         "PJESKOVITO" to 3..4,
         "ILOVACA" to 5..6,
@@ -116,50 +116,36 @@ class TrefleDAO (private val context : Context?) {
 
     suspend fun getPlantsWithFlowerColor(flowerColor: String, substr: String): List<Biljka> {
         val resultList = mutableListOf<Biljka>()
-        var currentPage = 1
-        val pageSize = 20
+        val response = TrefleAdapter.retrofit.getPlants(
+            apiKey = BuildConfig.TREFLE_API_KEY,
+            flowerColor = flowerColor,
+            query = substr
+        )
+        val plants = response.body()?.plants ?: emptyList()
 
-        while (true) {
-            val response = TrefleAdapter.retrofit.getPlants(
-                apiKey = BuildConfig.TREFLE_API_KEY,
-                flowerColor = flowerColor,
-                page = currentPage,
-                pageSize = pageSize
+        for (plant in plants) {
+            val plantDetailsResponse = TrefleAdapter.retrofit.getPlantDetails(
+                id = plant.id,
+                apiKey = BuildConfig.TREFLE_API_KEY
             )
-
-            val plants = response.body()?.plants ?: emptyList()
-            if (plants.isEmpty()) {
-                break
-            }
-
-            for (plant in plants) {
-                val plantDetailsResponse = TrefleAdapter.retrofit.getPlantDetails(
-                    id = plant.id,
-                    apiKey = BuildConfig.TREFLE_API_KEY
-                )
                 val plantDetails = plantDetailsResponse.body()?.data
-                val name = plantDetails?.scientificName ?: ""
-
-                if (name.contains(substr, ignoreCase = true)) {
-                    val biljka = Biljka(
-                        naziv = name,
-                        porodica = plantDetails?.mainSpecies?.family ?: "",
-                        medicinskoUpozorenje = "",
-                        medicinskeKoristi = emptyList(),
-                        profilOkusa = null,
-                        jela = emptyList(),
-                        klimatskiTipovi = emptyList(),
-                        zemljisniTipovi = emptyList()
-                  )
-
-                    val fixedBiljka = fixData(biljka)
-                    resultList.add(fixedBiljka)
-                }
+                val name = plantDetails?.commonName ?: ""
+                val biljka = Biljka(
+                    naziv = name + " (" + plantDetails?.scientificName + ")",
+                    porodica = plantDetails?.mainSpecies?.family ?: "",
+                    medicinskoUpozorenje = "",
+                    medicinskeKoristi = emptyList(),
+                    profilOkusa = null,
+                    jela = emptyList(),
+                    klimatskiTipovi = emptyList(),
+                    zemljisniTipovi = emptyList()
+                )
+                val fixedBiljka = fixData(biljka)
+                resultList.add(fixedBiljka)
             }
-            currentPage++
-        }
         return resultList
     }
+
 
 
 
