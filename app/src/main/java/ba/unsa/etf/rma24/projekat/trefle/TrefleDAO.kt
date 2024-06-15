@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma24.projekat.trefle
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -7,6 +8,7 @@ import android.widget.ImageView
 import ba.unsa.etf.rma24.projekat.Biljka
 import ba.unsa.etf.rma24.projekat.BuildConfig
 import ba.unsa.etf.rma24.projekat.R
+import ba.unsa.etf.rma24.projekat.RetrofitInstance
 import ba.unsa.etf.rma24.projekat.pomocneKlase.KlimatskiTip
 import ba.unsa.etf.rma24.projekat.pomocneKlase.Zemljiste
 import com.bumptech.glide.Glide
@@ -44,7 +46,7 @@ class TrefleDAO (private val context : Context?) {
             try {
                 val latinskiNaziv = biljka.naziv.substringAfter("(").substringBefore(")")
                 val response =
-                    TrefleAdapter.retrofit.searchPlants(BuildConfig.TREFLE_API_KEY, latinskiNaziv)
+                    RetrofitInstance.apiService.searchPlants(BuildConfig.TREFLE_API_KEY, latinskiNaziv)
                 if (response.isSuccessful) {
                     val plants = response.body()?.plants
                     if (!plants.isNullOrEmpty()) {
@@ -64,10 +66,10 @@ class TrefleDAO (private val context : Context?) {
 
     suspend fun fixData(plant: Biljka): Biljka {
         val latinskiNaziv = plant.naziv.substringAfter("(").substringBefore(")")
-        val searchResponse = TrefleAdapter.retrofit.searchPlants(BuildConfig.TREFLE_API_KEY, latinskiNaziv)
+        val searchResponse = RetrofitInstance.apiService.searchPlants(BuildConfig.TREFLE_API_KEY, latinskiNaziv)
         val trefleBiljka = searchResponse.body()?.plants?.firstOrNull()
         trefleBiljka?.let {
-            val detailsResponse = TrefleAdapter.retrofit.getPlantDetails(it.id,
+            val detailsResponse = RetrofitInstance.apiService.getPlantDetails(it.id,
                 BuildConfig.TREFLE_API_KEY
             )
             if (detailsResponse.isSuccessful) {
@@ -116,7 +118,7 @@ class TrefleDAO (private val context : Context?) {
 
     suspend fun getPlantsWithFlowerColor(flowerColor: String, substr: String): List<Biljka> {
         val resultList = mutableListOf<Biljka>()
-        val response = TrefleAdapter.retrofit.getPlants(
+        val response = RetrofitInstance.apiService.getPlants(
             apiKey = BuildConfig.TREFLE_API_KEY,
             flowerColor = flowerColor,
             query = substr
@@ -124,7 +126,7 @@ class TrefleDAO (private val context : Context?) {
         val plants = response.body()?.plants ?: emptyList()
 
         for (plant in plants) {
-            val plantDetailsResponse = TrefleAdapter.retrofit.getPlantDetails(
+            val plantDetailsResponse = RetrofitInstance.apiService.getPlantDetails(
                 id = plant.id,
                 apiKey = BuildConfig.TREFLE_API_KEY
             )
@@ -151,7 +153,9 @@ class TrefleDAO (private val context : Context?) {
 
     suspend fun loadImageIntoImageView(imageView: ImageView, biljka: Biljka) {
         val bitmap = getImage(biljka)
-        if (context != null) {
+        val context = imageView.context
+
+        if (context != null && context is Activity) {
             Glide.with(context)
                 .load(bitmap)
                 .placeholder(R.drawable.eucaliptus)

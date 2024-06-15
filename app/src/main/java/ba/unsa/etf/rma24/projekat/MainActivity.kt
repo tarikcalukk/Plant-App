@@ -16,6 +16,7 @@ import ba.unsa.etf.rma24.projekat.trefle.TrefleDAO
 import ba.unsa.etf.rma24.projekat.adapteri.BotanickiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.KuharskiAdapter
 import ba.unsa.etf.rma24.projekat.adapteri.MedicinskiAdapter
+import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaDatabase
 import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
 import ba.unsa.etf.rma24.projekat.pomocneKlase.CustomColorAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -38,11 +39,14 @@ class MainActivity : AppCompatActivity() {
     private var filtriraneBiljke = BiljkaSingleton.filtriraneBiljke
     private var listaBiljaka = BiljkaSingleton.listaBiljaka
     private var staraLista: MutableList<Biljka>? = null
+    private lateinit var biljkaDao: BiljkaDao
+    private val database by lazy { BiljkaDatabase.getInstance(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        biljkaDao = database.biljkaDao()
         biljka = findViewById(R.id.biljkeRV)
         spinner = findViewById(R.id.modSpinner)
         resetBtn = findViewById(R.id.resetBtn)

@@ -7,7 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ba.unsa.etf.rma24.projekat.Biljka
+import ba.unsa.etf.rma24.projekat.BiljkaDao
 import ba.unsa.etf.rma24.projekat.R
+import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaDatabase
 import ba.unsa.etf.rma24.projekat.trefle.TrefleDAO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,8 +19,8 @@ class KuharskiAdapter(
     var biljke: List<Biljka>,
     private val filterCallback: (Biljka?) -> Unit
 ) : RecyclerView.Adapter<KuharskiAdapter.KuharskiHolder>() {
-
     private var clickedBiljka: Biljka? = null
+    private lateinit var biljkaDao: BiljkaDao
 
     fun updateBiljke(updatedList: List<Biljka>) {
         biljke = updatedList
@@ -96,9 +98,19 @@ class KuharskiAdapter(
         }
         val context = holder.itemView.context
         val trefleDAO = TrefleDAO(context)
+        if (!::biljkaDao.isInitialized) {
+            biljkaDao = BiljkaDatabase.getInstance(context).biljkaDao()
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
-            trefleDAO.loadImageIntoImageView(holder.slika, currentBiljka)
+            val image = biljkaDao.getImageByIdBiljke(currentBiljka.id ?: 0L)
+            if (image != null) {
+                holder.slika.setImageBitmap(image.bitmap)
+            } else {
+                val bitmap = trefleDAO.getImage(currentBiljka)
+                biljkaDao.addImage(currentBiljka.id ?: 0L, bitmap)
+                holder.slika.setImageBitmap(bitmap)
+            }
         }
     }
 }

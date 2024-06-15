@@ -12,15 +12,17 @@ import android.widget.ImageView
 import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import ba.unsa.etf.rma24.projekat.trefle.TrefleDAO
 import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
 import ba.unsa.etf.rma24.projekat.pomocneKlase.KlimatskiTip
 import ba.unsa.etf.rma24.projekat.pomocneKlase.MedicinskaKorist
 import ba.unsa.etf.rma24.projekat.pomocneKlase.ProfilOkusaBiljke
 import ba.unsa.etf.rma24.projekat.pomocneKlase.Zemljiste
-import kotlinx.coroutines.GlobalScope
+import ba.unsa.etf.rma24.projekat.trefle.TrefleDAO
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
 class NovaBiljkaActivity : AppCompatActivity() {
     private lateinit var nazivET: EditText
@@ -37,6 +39,9 @@ class NovaBiljkaActivity : AppCompatActivity() {
     private lateinit var dodajBiljkuBtn: Button
     private lateinit var uslikajBiljkuBtn: Button
     private val request = 1
+    private lateinit var trefleDao: TrefleDAO
+    @Inject
+    private lateinit var biljkaDao: BiljkaDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +60,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
         dodajJeloBtn = findViewById(R.id.dodajJeloBtn)
         dodajBiljkuBtn = findViewById(R.id.dodajBiljkuBtn)
         uslikajBiljkuBtn = findViewById(R.id.uslikajBiljkuBtn)
+        trefleDao = TrefleDAO(this)
 
         medicinskaKoristLV.adapter = ArrayAdapter(
             this,
@@ -91,7 +97,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
         }
 
         dodajJeloBtn.setOnClickListener {
-            var prethodnaVrednostJela = ""
+            val prethodnaVrijednostJela = ""
             val novoJelo = jeloET.text.toString().trim().lowercase()
             when (novoJelo.length) {
                 in 2..20 -> {
@@ -123,7 +129,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
                 1 -> {
                     /* Ako se pokuša promijeniti naziv jela a da ima samo 1 znak,
                          ostavlja se stara vrijednost koja je bila! */
-                    jeloET.setText(prethodnaVrednostJela)
+                    jeloET.setText(prethodnaVrijednostJela)
                 }
                 else -> {
                     val indexPostojecegJela = dodajJeloBtn.tag as? Int
@@ -171,25 +177,22 @@ class NovaBiljkaActivity : AppCompatActivity() {
                         odabraneMedicinskeKoristi.add(MedicinskaKorist.valueOf(medicinskaKoristLV.getItemAtPosition(i).toString()))
                     }
                 }
-
                 val novaBiljka = Biljka(
-                    naziv,
-                    porodica,
-                    medicinskoUpozorenje,
-                    odabraneMedicinskeKoristi,
-                    odabranaJela,
-                    odabraniProfilOkusa,
-                    odabraniKlimatskiTipovi,
-                    odabraniZemljisniTipovi,
+                    id= 0,
+                    naziv = naziv,
+                    porodica = porodica,
+                    medicinskoUpozorenje = medicinskoUpozorenje,
+                    medicinskeKoristi = odabraneMedicinskeKoristi,
+                    jela = odabranaJela,
+                    profilOkusa = odabraniProfilOkusa,
+                    klimatskiTipovi = odabraniKlimatskiTipovi,
+                    zemljisniTipovi = odabraniZemljisniTipovi
                 )
 
-
-                GlobalScope.launch {
-                    val trefleDAO = TrefleDAO(this@NovaBiljkaActivity)
-                    var ispravljenaBiljka = Biljka("Rose", "Rosaceae", "Otrovno", emptyList(), emptyList(), null, emptyList(), emptyList())
-                    ispravljenaBiljka = trefleDAO.fixData(novaBiljka)
+                CoroutineScope(Dispatchers.Main).launch {
+                    val ispravljenaBiljka = trefleDao.fixData(novaBiljka)
                     BiljkaSingleton.listaBiljaka.add(ispravljenaBiljka)
-
+                    biljkaDao.saveBiljka(ispravljenaBiljka)
                     val intent = Intent(this@NovaBiljkaActivity, MainActivity::class.java)
                     setResult(Activity.RESULT_OK, intent)
                     finish()
@@ -200,7 +203,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
         uslikajBiljkuBtn.setOnClickListener {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             if (takePictureIntent.resolveActivity(packageManager) != null) {
-                takePictureLauncher.launch(takePictureIntent) // Korištenje ActivityResultLauncher-a za pokretanje aktivnosti
+                takePictureLauncher.launch(takePictureIntent)
             } else {
                 dodajBiljkuBtn.error = "Aplikacija za kameru nije dostupna"
             }
@@ -244,7 +247,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
             nazivET.error = "Naziv mora biti između 2 i 40 znakova"
             validacija = false
         }
-        val formatPattern = "^[^\\(]+\\([^\\)]+\\)$".toRegex()
+        val formatPattern = "^[^(]+\\([^)]+\\)$".toRegex()
         if (!formatPattern.containsMatchIn(naziv)) {
             nazivET.error = "Naziv mora biti u formatu Naziv(latinski naziv)"
             validacija = false

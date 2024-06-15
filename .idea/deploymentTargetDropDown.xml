@@ -2,7 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="TestS2">
+      <entry key="BiljkeDB4test">
+        <State />
+      </entry>
+      <entry key="DatabaseTest">
+        <State />
+      </entry>
+      <entry key="a5_provjeriDaUSvimBiljkamaPostojiKoristSmirenje()">
         <State />
       </entry>
       <entry key="app">
@@ -18,11 +24,8 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-29T20:38:00.375021400Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-06-12T20:02:37.409477700Z" />
         </State>
-      </entry>
-      <entry key="testValidacijaBarJednoJelo()">
-        <State />
       </entry>
     </value>
   </component>
