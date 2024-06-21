@@ -19,6 +19,7 @@ import ba.unsa.etf.rma24.projekat.Biljka
     ]
 )
 data class BiljkaBitmap(
-    @PrimaryKey(autoGenerate = true) val idBiljke: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo(name = "idBiljke") val idBiljke: Long,
     @ColumnInfo(name = "bitmap") val bitmap: Bitmap
 )
