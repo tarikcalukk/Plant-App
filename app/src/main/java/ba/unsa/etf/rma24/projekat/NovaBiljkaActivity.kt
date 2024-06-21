@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaDatabase
 import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
 import ba.unsa.etf.rma24.projekat.pomocneKlase.KlimatskiTip
 import ba.unsa.etf.rma24.projekat.pomocneKlase.MedicinskaKorist
@@ -22,7 +23,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
-import javax.inject.Inject
 
 class NovaBiljkaActivity : AppCompatActivity() {
     private lateinit var nazivET: EditText
@@ -40,7 +40,6 @@ class NovaBiljkaActivity : AppCompatActivity() {
     private lateinit var uslikajBiljkuBtn: Button
     private val request = 1
     private lateinit var trefleDao: TrefleDAO
-    @Inject
     private lateinit var biljkaDao: BiljkaDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +60,8 @@ class NovaBiljkaActivity : AppCompatActivity() {
         dodajBiljkuBtn = findViewById(R.id.dodajBiljkuBtn)
         uslikajBiljkuBtn = findViewById(R.id.uslikajBiljkuBtn)
         trefleDao = TrefleDAO(this)
+
+        biljkaDao = BiljkaDatabase.getInstance(this).biljkaDao()
 
         medicinskaKoristLV.adapter = ArrayAdapter(
             this,

@@ -19,9 +19,11 @@ import ba.unsa.etf.rma24.projekat.adapteri.MedicinskiAdapter
 import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaDatabase
 import ba.unsa.etf.rma24.projekat.pomocneKlase.BiljkaSingleton
 import ba.unsa.etf.rma24.projekat.pomocneKlase.CustomColorAdapter
+import ba.unsa.etf.rma24.projekat.pomocneKlase.biljke
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
@@ -40,13 +42,18 @@ class MainActivity : AppCompatActivity() {
     private var listaBiljaka = BiljkaSingleton.listaBiljaka
     private var staraLista: MutableList<Biljka>? = null
     private lateinit var biljkaDao: BiljkaDao
-    private val database by lazy { BiljkaDatabase.getInstance(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        biljkaDao = database.biljkaDao()
+        biljkaDao = BiljkaDatabase.getInstance(applicationContext).biljkaDao()
+
+        runBlocking {
+            if (biljkaDao.getAllBiljkas().isEmpty()) {
+                biljkaDao.insertBiljkeList(biljke)
+            }
+        }
         biljka = findViewById(R.id.biljkeRV)
         spinner = findViewById(R.id.modSpinner)
         resetBtn = findViewById(R.id.resetBtn)

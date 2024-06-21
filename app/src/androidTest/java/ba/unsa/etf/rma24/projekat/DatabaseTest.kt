@@ -9,6 +9,7 @@ import ba.unsa.etf.rma24.projekat.pomocneKlase.KlimatskiTip
 import ba.unsa.etf.rma24.projekat.pomocneKlase.MedicinskaKorist
 import ba.unsa.etf.rma24.projekat.pomocneKlase.ProfilOkusaBiljke
 import ba.unsa.etf.rma24.projekat.pomocneKlase.Zemljiste
+import ba.unsa.etf.rma24.projekat.pomocneKlase.biljke
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
@@ -78,5 +79,25 @@ class DatabaseTest {
 
         val allBiljkas = biljkaDao.getAllBiljkas()
         assertTrue(allBiljkas.isEmpty())
+    }
+    @Test
+    fun testInsertBiljkeList() = runBlocking {
+        val biljke = biljke
+
+        biljkaDao.insertBiljkeList(biljke)
+
+        val allBiljkas = biljkaDao.getAllBiljkas()
+        assertEquals(biljke.size, allBiljkas.size)
+
+        biljke.forEachIndexed { index, biljka ->
+            assertEquals(biljka.naziv, allBiljkas[index].naziv)
+            assertEquals(biljka.porodica, allBiljkas[index].porodica)
+            assertEquals(biljka.medicinskoUpozorenje, allBiljkas[index].medicinskoUpozorenje)
+            assertEquals(biljka.medicinskeKoristi, allBiljkas[index].medicinskeKoristi)
+            assertEquals(biljka.profilOkusa, allBiljkas[index].profilOkusa)
+            assertEquals(biljka.jela, allBiljkas[index].jela)
+            assertEquals(biljka.klimatskiTipovi, allBiljkas[index].klimatskiTipovi)
+            assertEquals(biljka.zemljisniTipovi, allBiljkas[index].zemljisniTipovi)
+        }
     }
 }

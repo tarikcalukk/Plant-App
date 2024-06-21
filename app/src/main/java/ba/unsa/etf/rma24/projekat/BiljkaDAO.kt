@@ -76,4 +76,9 @@ interface BiljkaDao {
         }
         return updatedCount
     }
+
+    @Transaction
+    suspend fun insertBiljkeList(biljke: List<Biljka>) {
+        biljke.forEach { saveBiljka(it) }
+    }
 }

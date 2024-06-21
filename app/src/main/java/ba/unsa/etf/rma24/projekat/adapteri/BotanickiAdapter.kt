@@ -14,6 +14,7 @@ import ba.unsa.etf.rma24.projekat.trefle.TrefleDAO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class BotanickiAdapter(
     var biljke: List<Biljka>,
@@ -96,10 +97,14 @@ fun updateBiljke(updatedList: List<Biljka>) {
 
         val context = holder.itemView.context
         val trefleDAO = TrefleDAO(context)
-        if (!::biljkaDao.isInitialized) {
-            biljkaDao = BiljkaDatabase.getInstance(context).biljkaDao()
-        }
 
+        biljkaDao = BiljkaDatabase.getInstance(context).biljkaDao()
+
+        runBlocking {
+            if (biljkaDao.getAllBiljkas().isEmpty()) {
+                biljkaDao.insertBiljkeList(ba.unsa.etf.rma24.projekat.pomocneKlase.biljke)
+            }
+        }
         CoroutineScope(Dispatchers.Main).launch {
             val image = biljkaDao.getImageByIdBiljke(currentBiljka.id ?: 0L)
             if (image != null) {

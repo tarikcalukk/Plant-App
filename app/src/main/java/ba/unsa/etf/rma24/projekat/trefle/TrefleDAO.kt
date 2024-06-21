@@ -1,17 +1,14 @@
 package ba.unsa.etf.rma24.projekat.trefle
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.widget.ImageView
 import ba.unsa.etf.rma24.projekat.Biljka
 import ba.unsa.etf.rma24.projekat.BuildConfig
 import ba.unsa.etf.rma24.projekat.R
 import ba.unsa.etf.rma24.projekat.RetrofitInstance
 import ba.unsa.etf.rma24.projekat.pomocneKlase.KlimatskiTip
 import ba.unsa.etf.rma24.projekat.pomocneKlase.Zemljiste
-import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URL
@@ -52,8 +49,10 @@ class TrefleDAO (private val context : Context?) {
                     if (!plants.isNullOrEmpty()) {
                         val imageUrl = plants.first().slika
                         if (!imageUrl.isNullOrEmpty()) {
-                            val imageResponse = URL(imageUrl).openStream()
-                            return@withContext BitmapFactory.decodeStream(imageResponse)
+                            val imageStream = URL(imageUrl).openStream()
+                            val originalBitmap = BitmapFactory.decodeStream(imageStream)
+                            val croppedBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, 90, 90)
+                            return@withContext croppedBitmap
                         }
                     }
                 }
@@ -146,22 +145,5 @@ class TrefleDAO (private val context : Context?) {
                 resultList.add(fixedBiljka)
             }
         return resultList
-    }
-
-
-
-
-    suspend fun loadImageIntoImageView(imageView: ImageView, biljka: Biljka) {
-        val bitmap = getImage(biljka)
-        val context = imageView.context
-
-        if (context != null && context is Activity) {
-            Glide.with(context)
-                .load(bitmap)
-                .placeholder(R.drawable.eucaliptus)
-                .error(R.drawable.eucaliptus)
-                .fallback(R.drawable.eucaliptus)
-                .into(imageView)
-        }
     }
 }
